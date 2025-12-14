@@ -46,3 +46,10 @@ public class UserServlet extends HttpServlet {
 # 안 씁니다..
 결국 서블릿에서 하는 게 너무 많다 보니까 단위 테스트가 힘들고, jsp 자체가 너무 복잡함 가독성도 별로고.
 
+mvc에서 m==모델은 그냥 순수하게 도메인이라기 보다는 그냥 db에서 조회하고 그런 비즈니스 로직을 의미
+
+v는 view==jsp고
+
+c는 controller==서블릿
+
+그니까 cm이 너무 붙어 있다는 거임.
