@@ -5,9 +5,7 @@ jsp 자체가 서블릿 방식의 짬뽕을 조금이라도 분리하려는 시�
 
 JSP: HTML 문서 안에 필요한 부분만 자바 코드를 넣으면 됨 → 훨씬 읽기 편함
 
-JSP에서는 <%= expression %> 같은 태그를 통해 자바 결과를 바로 HTML에 출력 가능
-
-예: <h1>현재 시간: <%= new java.util.Date() %></h1>
+h1 <%= new java.util.Date() %> h1 이런 느낌
 
 CSS/JS 통합 관리 용이
 
