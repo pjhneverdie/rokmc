@@ -9,7 +9,7 @@
 
 그 분류를 위한 통이 ```HandlerMapping``` ! 그래서 ```HandlerMapping``` 종류도 여러 가지.
 
-애플리케이션이 시작되면 ```HandlerMapping```이 리플렉션으로 클래스, 메서드 돌면서 "어? 이거 내 통에 담아야 하네" 하면서 핸들러들 정보를 모아둠.
+애플리케이션이 시작되면 여러 ```HandlerMapping```들이 리플렉션으로 클래스, 메서드 돌면서 "어? 이거 내 통에 담아야 하네" 하면서 핸들러들 정보를 모아둠.
 
 그럼 ```DispathcerServlet``` 이 ```HandlerMapping``` 에, 정확히는 각 ```HandlerMapping``` 의 ```getHandler``` 메서드 돌리면서 ```HttpRequest``` 넘기면, ```HandlerMapping``` 들이 ```HttpRequest``` 에서 url, HTTP Method 이런 거 읽어서 자기가 가진 핸들러 중 일치하는 걸 찾아서 그 핸들러를 반환함.
 
