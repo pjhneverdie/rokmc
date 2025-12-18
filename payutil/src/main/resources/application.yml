@@ -7,7 +7,7 @@ spring:
         registration:
           kakao:
             client-id: 4896e4018854516f94fcaba927f0b913
-            redirect-uri: http://localhost:8080/auth/login/kakao
+            redirect-uri: https://reimagined-orbit-4jg7r59p5qv6hjxgx-8080.app.github.dev/
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope: profile_nickname, account_email
