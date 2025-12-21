@@ -1,17 +1,23 @@
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+
 spring:
-  application:
-    name: payutil
   security:
     oauth2:
       client:
         registration:
           kakao:
+            client-name: kakao
             client-id: 4896e4018854516f94fcaba927f0b913
-            redirect-uri: https://reimagined-orbit-4jg7r59p5qv6hjxgx-8080.app.github.dev/login/oauth2/code/kakao
-            client-authentication-method: POST
+            client-secret: C8Ls0AmhhrkrKSJYFSLpPRhGaH0Bn4lp
+            scope:
+              - profile_nickname
+              - profile_image
             authorization-grant-type: authorization_code
-            scope: profile_nickname, account_email
-            client-name: Kakao
+            redirect-uri: https://reimagined-orbit-4jg7r59p5qv6hjxgx-8080.app.github.dev/login/oauth2/code/kakao
+            client-authentication-method: client_secret_post
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize

@@ -9,7 +9,7 @@
 
 <body>
     <a
-        th:href="'https://kauth.kakao.com/oauth/authorize?client_id=' + ${kakaoClientId} + '&redirect_uri=' + ${kakaoRedirectUri} + '&response_type=code'">
+        th:href="@{/oauth2/authorization/kakao}">
         <button type="button">카카오로 로그인</button>
     </a>
 
