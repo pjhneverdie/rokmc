@@ -112,3 +112,30 @@ public Authentication attemptAuthentication(HttpServletRequest request, HttpServ
 처음만 다르지 결국 마지막은 얘네가 하더라고. ```AuthenticationSuccessHandler```, ```AuthenticationFailureHandler ``` 까지 해서 공부하면 시큐리티 그래도 잘 응용할 수 있을 거야.
 
 나중에 jwt 써도 결국 얘네니까.
+
+자 그럼 이젠 스프링 시큐리티 전체 맥락에 대해 알려줄게.
+
+생각보다 쉬워. 키워드 중심으로 가보게. 
+
+# ```DelegatingFilterProxy``` 와 ```FilterChainProxy```
+
+![poster](./filterchainproxy.png)
+
+```DelegatingFilterProxy``` 는 ```DispatcherServlet``` 느낌이야. 톰켓 오리지널 필터 체인에 대표로 침투해서 스프링 시큐리티 필터체인이랑 연결하는 역할이야.
+
+```FilterChainProxy``` 는 여러 필터 체인들 중 요청에 맞는 필터 체인을 선택하는 놈이야. ```HandlerMapping``` 느낌이지.
+
+이게 단점이 스프링부트가 편하긴 해 진짜로. 근데 너무 자동화라 나처럼 쌩초보는 이해가 힘들어 마법 같아서. 그래서 예전 코드를 가져왔어. 순수 스프링 쓰던 때는 이렇게 했대.
+
+```xml
+  <bean id="myfilterChainProxy" class="org.springframework.security.util.FilterChainProxy">
+      <constructor-arg>
+          <util:list>
+              <security:filter-chain pattern="/do/not/filter*" filters="none"/>
+              <security:filter-chain pattern="/**" filters="filter1,filter2,filter3"/>
+          </util:list>
+      </constructor-arg>
+  </bean>
+```
+
+바로 이해되지? ```FilterChainProxy``` 가 여러 필터 체인들을 가지고 있고 하나를 선택해서 돌리는 거야. 한 어플리케이션에서 로그인 방법이 여러 개 일 수도 있으니가 만들었겄지.
