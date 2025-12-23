@@ -16,8 +16,6 @@ public class KakaoOAuth2UserService extends DefaultOAuth2UserService {
             throws OAuth2AuthenticationException {
         final OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        System.out.println(oAuth2User.getAttributes());
-
         return new KakaoUser(oAuth2User);
     }
 
