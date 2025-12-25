@@ -1,0 +1,30 @@
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background-color: rgb(245, 245, 245);
+    color: rgb(31, 30, 30);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    #loading {
+        background-color: rgb(31, 30, 30);
+        color: rgb(245, 245, 245);
+    }
+}
+
+body {
+    background-image: url('/images/home-background.jpg');
+    background-size: cover;
+}
+
+body.loaded #loading {
+    opacity: 0;
+    visibility: hidden;
+}

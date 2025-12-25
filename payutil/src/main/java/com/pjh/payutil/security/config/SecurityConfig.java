@@ -35,7 +35,7 @@ public class SecurityConfig {
                                                                                                 .userService(kakaoOAuth2UserService))
                                                                 .successHandler(kakaoLoginSuccessHandler))
                                 .authorizeHttpRequests((authorize) -> authorize
-                                                .requestMatchers("/", "/home").permitAll()
+                                                .requestMatchers("/", "/css/**", "/images/**", "/js/**").permitAll()
                                                 .anyRequest().authenticated());
 
                 return http.build();

@@ -5,11 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 <body>
-    <h1> 성공 </h1>
+    <!-- 로딩 화면 -->
+    <div id="loading">로딩 중...</div>
 
+    <!-- user가 존재하지 않으면 카카오 로그인 버튼을 보여줌 -->
+    <div th:if="${user == null}">
+        <a th:href="@{/oauth2/authorization/kakao}">
+            <button type="button">카카오로 로그인</button>
+        </a>
+    </div>
+
+    <!-- user가 존재하면 카카오페이 링크 입력 폼 -->
+    <div th:if="${user != null}">
+        <p>환영합니다, <span th:text="${user.getNickname()}"></span>님!</p>
+    </div>
+    <script th:src="@{/js/loading.js}"></script>
 </body>
 
 </html>

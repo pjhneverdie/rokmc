@@ -11,14 +11,13 @@ import com.pjh.payutil.security.oauth2.dto.KakaoUser;
 public class HomeController {
 
     @GetMapping("/")
-    public String login(Model model) {
-        return "login";
+    public String login(@AuthenticationPrincipal KakaoUser user, Model model) {
+        model.addAttribute("user", user);
+        return "home";
     }
 
     @GetMapping("/home")
     public String home(@AuthenticationPrincipal KakaoUser user, Model model) {
-        System.out.println("요청왔어");
-
         model.addAttribute("user", user);
 
         return "home";
