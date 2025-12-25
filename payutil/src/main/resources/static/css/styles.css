@@ -19,12 +19,41 @@
     }
 }
 
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 body {
-    background-image: url('/images/home-background.jpg');
-    background-size: cover;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('/images/home-background.gif');
+    background-size: cover; 
+    background-repeat: no-repeat; 
 }
 
 body.loaded #loading {
     opacity: 0;
     visibility: hidden;
 }
+
+#content-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#logo {
+    pointer-events: none;
+    user-select: none;
+    width: 40%;
+    max-width: 600px;
+}
+
+
