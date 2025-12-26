@@ -16,14 +16,16 @@
     <canvas id="matrix"></canvas>
 
     <div id="content-wrapper" th:classappend="${user != null} ? 'logged-in' : 'logged-out'">
-
         <img id="logo" src="/images/logo.png" alt="payutil" />
 
         <!-- 로그인 상태 -->
-        <div class="input-group">
-            
+        <div th:if="${user != null}" class="input-group">
+            <input id="link-input">
         </div>
 
+        <div class="h-space"></div>
+
+        <button id="share-btn" class="button" type="button">공유하기</button>
 
         <!-- 로그아웃 상태 -->
         <a th:if="${user == null}" th:href="@{/oauth2/authorization/kakao}">
@@ -31,8 +33,21 @@
         </a>
     </div>
 
+    <div id="modal">
+        <h1 class="modal-title"> 링크와 같이 공유할 사진을 선택해 주세요.</h1>
+        <div class="image-input-container">
+            <label for="image-upload" class="image-upload-label">
+                <span>이미지 선택</span>
+                <input type="file" id="image-upload" accept="image/*" />
+            </label>
+        </div>
+
+        <button id="close-btn" class="button" type="button">닫기</button>
+    </div>
+
     <script th:src="@{/js/loading.js}"></script>
     <script th:src="@{/js/matrix.js}"></script>
+    <script th:src="@{/js/modal.js}"></script>
 </body>
 
 </html>
