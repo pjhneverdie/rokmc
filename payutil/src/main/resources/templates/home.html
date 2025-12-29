@@ -23,9 +23,9 @@
             <input id="link-input">
         </div>
 
-        <div class="h-space"></div>
+        <div th:if="${user != null}" class="h-space"></div>
 
-        <button id="share-btn" class="button" type="button">공유하기</button>
+        <button th:if="${user != null}" id="share-btn" class="button" type="button">공유하기</button>
 
         <!-- 로그아웃 상태 -->
         <a th:if="${user == null}" th:href="@{/oauth2/authorization/kakao}">
@@ -34,13 +34,17 @@
     </div>
 
     <div id="modal">
-        <h1 class="modal-title"> 링크와 같이 공유할 사진을 선택해 주세요.</h1>
-        <div class="image-input-container">
-            <label for="image-upload" class="image-upload-label">
-                <span>이미지 선택</span>
-                <input type="file" id="image-upload" accept="image/*" />
-            </label>
+        <div>
+            <h1 class="modal-title">템플릿을 작성해주세요.</h1>
         </div>
+
+        <label class="modal-textarea-label">제목</label>
+        <textarea id="title-field" class="modal-textarea" spellcheck="false" maxlength="15"></textarea>
+
+        <div th:if="${user != null}" class="h-space"></div>
+
+        <label class="modal-textarea-label">본문</label>
+        <textarea id="despcription-field" class="modal-textarea" spellcheck="false" maxlength="15"></textarea>
 
         <button id="close-btn" class="button" type="button">닫기</button>
     </div>
@@ -48,6 +52,7 @@
     <script th:src="@{/js/loading.js}"></script>
     <script th:src="@{/js/matrix.js}"></script>
     <script th:src="@{/js/modal.js}"></script>
+    <script th:src="@{/js/textarea.js}"></script>
 </body>
 
 </html>
