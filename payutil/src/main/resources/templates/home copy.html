@@ -8,29 +8,36 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
-<body class="app">
-    <div id="content-wrapper">
+<body>
+    <!-- 로딩 화면 -->
+    <div id="loading">로딩 중...</div>
+
+    <!-- matrix effect 화면 -->
+    <canvas id="matrix"></canvas>
+
+    <div id="content-wrapper" th:classappend="${user != null} ? 'logged-in' : 'logged-out'">
         <img id="logo" src="/images/logo.png" alt="payutil" />
+
+        <!-- 로그인 상태 -->
+        <div th:if="${user != null}" class="input-group">
+            <input id="link-input">
+        </div>
+
+        <div th:if="${user != null}" class="h-space"></div>
+
+        <button th:if="${user != null}" id="share-btn" class="button" type="button">공유하기</button>
 
         <!-- 로그아웃 상태 -->
         <a th:if="${user == null}" th:href="@{/oauth2/authorization/kakao}">
             <button class="button" type="button">카카오로 로그인</button>
         </a>
-
-        <div th:if="${user != null}" id="login-content-wrapper">
-            <input id="link-input">
-            <button id="share-btn" class="button" type="button">공유하기</button>
-        </div>
     </div>
+
     <div id="modal">
-
-
         <div>
             <h1 class="modal-title">템플릿을 작성해주세요.</h1>
         </div>
-        <div id="image-upload-form">
 
-        </div>
         <label class="modal-textarea-label">제목</label>
         <textarea id="title-field" class="modal-textarea" spellcheck="false" maxlength="15"></textarea>
 
@@ -42,6 +49,8 @@
         <button id="close-btn" class="button" type="button">닫기</button>
     </div>
 
+    <script th:src="@{/js/loading.js}"></script>
+    <script th:src="@{/js/matrix.js}"></script>
     <script th:src="@{/js/modal.js}"></script>
     <script th:src="@{/js/textarea.js}"></script>
 </body>
