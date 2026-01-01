@@ -1,35 +1,35 @@
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
+const wrapper = document.getElementById("main-layout-wrapper");
 
-// 캔버스 크기 설정
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const fontSize = 14;
+const spacing = 6;
+let columns;
+let drops;
 
-// 글자 설정
-const characters = 'payutil'.split('');
-const fontSize = 16;
+function resizeCanvas() {
+    canvas.width = wrapper.clientWidth;
+    canvas.height = wrapper.clientHeight;
 
-// 열 수
-const columns = Math.floor(canvas.width / fontSize) / 3;
-const drops = [];
-
-// Drops 초기화 (각 열의 시작 높이를 랜덤으로 설정)
-for (let x = 0; x < columns; x++) {
-    drops[x] = Math.floor(Math.random() * canvas.height / fontSize);
+    columns = Math.floor(canvas.width / (fontSize * spacing));
+    drops = Array.from({ length: columns }, () => Math.floor(Math.random() * canvas.height / fontSize));
 }
 
-// 애니메이션 실행
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const characters = '0011010110'.split('');
+
 function drawMatrix() {
     ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#00FF00"; // 초록색 글자
+    ctx.fillStyle = "#00FF00";
     ctx.font = fontSize + "px monospace";
 
     for (let i = 0; i < drops.length; i++) {
         const text = characters[Math.floor(Math.random() * characters.length)];
-        
-        const x = i * fontSize * 6;
+        const x = i * fontSize * spacing; // 간격 적용
         const y = drops[i] * fontSize;
 
         ctx.fillText(text, x, y);
@@ -43,3 +43,4 @@ function drawMatrix() {
 }
 
 setInterval(drawMatrix, 50);
+

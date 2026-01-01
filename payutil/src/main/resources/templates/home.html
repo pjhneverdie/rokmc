@@ -4,12 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>payutil</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
-<body class="app">
-    <div id="content-wrapper">
+<body id="app">
+    <div id="main-layout-wrapper">
+        <canvas id="matrix"></canvas>
+        
         <img id="logo" src="/images/logo.png" alt="payutil" />
 
         <!-- 로그아웃 상태 -->
@@ -17,33 +19,38 @@
             <button class="button" type="button">카카오로 로그인</button>
         </a>
 
-        <div th:if="${user != null}" id="login-content-wrapper">
+        <!-- 로그인 상태 -->
+        <div th:if="${user != null}" id="link-input-wrapper">
             <input id="link-input">
             <button id="share-btn" class="button" type="button">공유하기</button>
         </div>
     </div>
+
     <div id="modal">
-
-
         <div>
-            <h1 class="modal-title">템플릿을 작성해주세요.</h1>
+            <h1 id="modal-title">양식을 제출해주세요. ❤️</h1>
         </div>
-        <div id="image-upload-form">
 
+        <div id="modal-image-input-form-wrapper">
+            <input id="modal-image-input" type="file" accept="image/*">
+
+            <div id="modal-image-preview-wrapper">
+                <img id="modal-image-preview" alt="미리보기">
+                <span id="modal-image-upload-text">이미지 업로드</span>
+            </div>
         </div>
+
         <label class="modal-textarea-label">제목</label>
-        <textarea id="title-field" class="modal-textarea" spellcheck="false" maxlength="15"></textarea>
-
-        <div th:if="${user != null}" class="h-space"></div>
+        <textarea id="modal-title-textarea" class="modal-textarea" spellcheck="false" maxlength="12"></textarea>
 
         <label class="modal-textarea-label">본문</label>
-        <textarea id="despcription-field" class="modal-textarea" spellcheck="false" maxlength="15"></textarea>
+        <textarea id="modal-despcription-textarea" class="modal-textarea" spellcheck="false" maxlength="20"></textarea>
 
-        <button id="close-btn" class="button" type="button">닫기</button>
+        <button id="modal-close-btn" class="button" type="button">닫기</button>
     </div>
 
+    <script th:src="@{/js/matrix.js}"></script>
     <script th:src="@{/js/modal.js}"></script>
-    <script th:src="@{/js/textarea.js}"></script>
 </body>
 
 </html>
