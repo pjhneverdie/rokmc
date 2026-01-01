@@ -1,12 +1,12 @@
 const modal = document.getElementById("modal");
-const shareBtn = document.getElementById("share-btn");
+const openBtn = document.getElementById("model-open-btn");
 const closeBtn = document.getElementById("modal-close-btn");
 
 const imageInput = document.getElementById("modal-image-input");
 const imagePreview = document.getElementById("modal-image-preview");
 const imageUploadText = document.getElementById("modal-image-upload-text");
 
-shareBtn.addEventListener("click", () => {
+openBtn.addEventListener("click", () => {
   modal.classList.add("is-open");
 });
 

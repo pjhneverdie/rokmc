@@ -46,6 +46,7 @@
 }
 
 #link-input-wrapper {
+    width: 90%;
     height: 120px;
     display: flex;
     flex-direction: column;
@@ -54,6 +55,7 @@
 }
 
 #link-input {
+    width: 100%;
     font-size: 16px;
     color: white;
     background-color: rgba(0, 0, 0, 0.05);
@@ -92,9 +94,20 @@
     pointer-events: auto;
 }
 
+#modal-header-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 #modal-title {
     margin: 0px;
     font-size: 28px;
+}
+
+#modal-close-btn {
+    cursor: pointer;
 }
 
 #modal-image-input-form-wrapper {
@@ -163,6 +176,6 @@
     min-height: 120px;
 }
 
-#modal-close-btn {
+#modal-share-btn {
     min-height: 40px;
 }

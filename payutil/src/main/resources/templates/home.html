@@ -11,7 +11,7 @@
 <body id="app">
     <div id="main-layout-wrapper">
         <canvas id="matrix"></canvas>
-        
+
         <img id="logo" src="/images/logo.png" alt="payutil" />
 
         <!-- 로그아웃 상태 -->
@@ -22,13 +22,14 @@
         <!-- 로그인 상태 -->
         <div th:if="${user != null}" id="link-input-wrapper">
             <input id="link-input">
-            <button id="share-btn" class="button" type="button">공유하기</button>
+            <button id="model-open-btn" class="button" type="button">제출하기</button>
         </div>
     </div>
 
     <div id="modal">
-        <div>
+        <div id="modal-header-wrapper">
             <h1 id="modal-title">양식을 제출해주세요. ❤️</h1>
+            <h1 id="modal-close-btn">X</h1>
         </div>
 
         <div id="modal-image-input-form-wrapper">
@@ -46,11 +47,15 @@
         <label class="modal-textarea-label">본문</label>
         <textarea id="modal-despcription-textarea" class="modal-textarea" spellcheck="false" maxlength="20"></textarea>
 
-        <button id="modal-close-btn" class="button" type="button">닫기</button>
+        <button id="modal-share-btn" class="button" type="button">공유하기</button>
     </div>
 
     <script th:src="@{/js/matrix.js}"></script>
     <script th:src="@{/js/modal.js}"></script>
+    <script th:src="@{/js/kakaoShare.js}" defer></script>
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.9/kakao.min.js"
+        integrity="sha384-JpLApTkB8lPskhVMhT+m5Ln8aHlnS0bsIexhaak0jOhAkMYedQoVghPfSpjNi9K1"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
