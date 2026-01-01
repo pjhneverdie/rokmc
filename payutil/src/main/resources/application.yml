@@ -28,3 +28,7 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+
+kakao:
+  web-url: https://reimagined-orbit-4jg7r59p5qv6hjxgx-8080.app.github.dev
+  js-key: 39e38609a0cbb50d554b80c1d616e2d5

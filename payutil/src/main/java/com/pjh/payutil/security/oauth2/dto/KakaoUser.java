@@ -7,8 +7,6 @@ import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.pjh.payutil.domain.Role;
-
 public class KakaoUser implements OAuth2User {
 
     private final OAuth2User oAuth2User;
