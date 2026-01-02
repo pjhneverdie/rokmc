@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.pjh.payutil.security.handler.KakaoLoginFailureHandler;
 import com.pjh.payutil.security.handler.KakaoLoginSuccessHandler;
 import com.pjh.payutil.security.oauth2.service.KakaoOAuth2UserService;
 
@@ -21,6 +22,7 @@ public class SecurityConfig {
 
         private final KakaoOAuth2UserService kakaoOAuth2UserService;
         private final KakaoLoginSuccessHandler kakaoLoginSuccessHandler;
+        private final KakaoLoginFailureHandler kakaoLoginFailureHandler;
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -33,9 +35,13 @@ public class SecurityConfig {
                                                                 .userInfoEndpoint(
                                                                                 (userInfoEndpointConfig) -> userInfoEndpointConfig
                                                                                                 .userService(kakaoOAuth2UserService))
-                                                                .successHandler(kakaoLoginSuccessHandler))
+                                                                .successHandler(kakaoLoginSuccessHandler)
+                                                                .failureHandler(kakaoLoginFailureHandler)
+
+                                )
                                 .authorizeHttpRequests((authorize) -> authorize
-                                                .requestMatchers("/", "/css/**", "/images/**", "/js/**").permitAll()
+                                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/error")
+                                                .permitAll()
                                                 .anyRequest().authenticated());
 
                 return http.build();

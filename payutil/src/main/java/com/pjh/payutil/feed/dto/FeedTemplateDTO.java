@@ -2,6 +2,9 @@ package com.pjh.payutil.feed.dto;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import lombok.Getter;
+
+@Getter
 public class FeedTemplateDTO {
 
     private final String contentTitle;
