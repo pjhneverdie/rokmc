@@ -28,8 +28,8 @@ public class HomeController {
         return "home";
     }
 
-    // 카카오 로그인 안 되면 여기로 오게 했어
-    @RequestMapping("/error")
+    // 카카오 로그인 문제 생기면 여기로 오게 했어
+    @RequestMapping("/errorPage")
     public String error(HttpServletRequest request, Model model) {
         String errorMessage = (String) request.getAttribute("errorMessage");
 
