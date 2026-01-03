@@ -35,7 +35,7 @@ public class HomeController {
 
         model.addAttribute("errorMessage", errorMessage);
 
-        return "error";
+        return "errorPage";
     }
 
 }

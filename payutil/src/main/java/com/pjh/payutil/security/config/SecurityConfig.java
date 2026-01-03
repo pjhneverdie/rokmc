@@ -9,8 +9,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.pjh.payutil.security.handler.KakaoLoginFailureHandler;
-import com.pjh.payutil.security.handler.KakaoLoginSuccessHandler;
+import com.pjh.payutil.security.entrypoint.UnAuthenticatedEntryPoint;
+import com.pjh.payutil.security.oauth2.handler.KakaoLoginFailureHandler;
+import com.pjh.payutil.security.oauth2.handler.KakaoLoginSuccessHandler;
 import com.pjh.payutil.security.oauth2.service.KakaoOAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class SecurityConfig {
         private final KakaoOAuth2UserService kakaoOAuth2UserService;
         private final KakaoLoginSuccessHandler kakaoLoginSuccessHandler;
         private final KakaoLoginFailureHandler kakaoLoginFailureHandler;
+        private final UnAuthenticatedEntryPoint unAuthenticatedEntryPoint;
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -30,15 +32,16 @@ public class SecurityConfig {
                                 .csrf(AbstractHttpConfigurer::disable)
                                 .httpBasic(AbstractHttpConfigurer::disable)
                                 .formLogin(AbstractHttpConfigurer::disable)
-                                .oauth2Login(
-                                                (config) -> config
-                                                                .userInfoEndpoint(
-                                                                                (userInfoEndpointConfig) -> userInfoEndpointConfig
-                                                                                                .userService(kakaoOAuth2UserService))
-                                                                .successHandler(kakaoLoginSuccessHandler)
-                                                                .failureHandler(kakaoLoginFailureHandler)
+                                .oauth2Login((config) -> config
+                                                .userInfoEndpoint(
+                                                                (userInfoEndpointConfig) -> userInfoEndpointConfig
+                                                                                .userService(kakaoOAuth2UserService))
+                                                .successHandler(kakaoLoginSuccessHandler)
+                                                .failureHandler(kakaoLoginFailureHandler)
 
                                 )
+                                .exceptionHandling(
+                                                (config) -> config.authenticationEntryPoint(unAuthenticatedEntryPoint))
                                 .authorizeHttpRequests((authorize) -> authorize
                                                 .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/errorPage")
                                                 .permitAll()
