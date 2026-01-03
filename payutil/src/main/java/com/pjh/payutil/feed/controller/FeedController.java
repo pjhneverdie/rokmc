@@ -10,6 +10,8 @@ import com.pjh.payutil.feed.dto.FeedTemplateForm;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class FeedController {
     private final YmlInfo ymlInfo;
 
     @PostMapping("/feed/share")
-    public ApiResponse<FeedTemplateDTO> share(@Valid @RequestBody FeedTemplateForm FeedTemplateForm) {
+    public ResponseEntity<ApiResponse<FeedTemplateDTO>> share(@Valid @RequestBody FeedTemplateForm FeedTemplateForm) {
 
         FeedTemplateDTO feedTemplateDTO = new FeedTemplateDTO(
                 FeedTemplateForm.getContentTitle(),
@@ -30,7 +32,7 @@ public class FeedController {
                 ymlInfo.getWebURL(),
                 ymlInfo.getJsKey());
 
-        return new ApiResponse<FeedTemplateDTO>(feedTemplateDTO, null);
+        return ResponseEntity.ok(new ApiResponse<FeedTemplateDTO>(feedTemplateDTO, null));
 
     }
 

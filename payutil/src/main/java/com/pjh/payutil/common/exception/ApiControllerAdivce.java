@@ -16,7 +16,7 @@ public class ApiControllerAdivce {
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
-
+        
         return new ResponseEntity<>(
                 new ApiResponse<>(
                         null,
