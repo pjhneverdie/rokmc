@@ -33,7 +33,6 @@ window.onload = function () {
   });
 };
 
-
 openButton.addEventListener("click", () => {
   const value = linkInput.value.trim();
 
@@ -63,46 +62,88 @@ shareButton.addEventListener("click", () => {
   const buttonTitle = document.getElementById('modal-button-textarea').value.trim();
   const kakaopayURL = linkInput.value.trim();
 
-  const file = imageInput.files[0];
+  const file = imageInput.files;
 
   if (!file) {
     alert("이미지를 업로드하세요.");
     return;
   }
 
-  Kakao.Share.uploadImage({
-    file: file
-  })
-    .then(function (response) {
-      const uploadedImageUrl = response.infos.original.url;
+  const options = {
+    maxSizeMB: 5,
+    maxWidthOrHeight: 1024,
+    useWebWorker: true,
+  };
 
-      const data = {
-        contentTitle,
-        contentDescription,
-        contentImageURL: uploadedImageUrl,
-        buttonTitle,
-        kakaopayURL
-      };
+  imageCompression(file[0], options)
+    .then((compressedFile) => {
+      const compressedFileWithName = new File([compressedFile], file[0].name, {
+        type: compressedFile.type,
+      });
 
-      fetch(`${window.location.origin}/feed/share`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+      Kakao.Share.uploadImage({
+        file: [compressedFileWithName]
       })
         .then(response => {
-          if (response.ok) {
-            alert("공유가 성공적으로 완료되었습니다!");
-          } else {
-            alert(response.body.message);
-          }
+          const uploadedImageUrl = response.infos.original.url;
+
+          const data = {
+            contentTitle,
+            contentDescription,
+            contentImageURL: uploadedImageUrl,
+            buttonTitle,
+            kakaopayURL
+          };
+
+          fetch(`${window.location.origin}/feed/share`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+            .then(response => {
+              if (response.ok) {
+                response.json().then(response => {
+                  Kakao.Share.sendDefault({
+                    objectType: 'feed',
+                    content: {
+                      title: response.contentTitle,
+                      description: response.contentDescription,
+                      imageUrl: response.contentImageURL,
+                      link: {
+                        mobileWebUrl: response.webUrl,
+                        webUrl: response.webUrl,
+                      },
+                    },
+                    buttons: [
+                      {
+                        title: response.buttonTitle,
+                        link: {
+                          mobileWebUrl: response.kakaopayURL,
+                          webUrl: response.kakaopayURL,
+                        },
+                      },
+                    ],
+                  });
+                });
+              } else {
+                response.json().then(response => {
+                  alert(response.message);
+                });
+              }
+            })
+            .catch(e => {
+              alert("알 수 없는 오류가 발생했습니다. 개발자에게 문의하세요. pjhneverdie@gmail.com");
+            });
         })
-        .catch(e => {
-          alert("알 수 없는 오류가 발생했습니다. 개발자에게 문의하세요. pjhneverdie@gmail.com");
+        .catch(function (e) {
+          alert("이미지 업로드에 실패했습니다. 이미지가 용량이 너무 크지 않은지 확인하세요.");
         });
     })
-    .catch(function (e) {
-      alert("이미지 업로드에 실패했습니다. 이미지가 용량이 너무 크지 않은지 확인하세요.");
+    .catch((error) => {
+      console.error(error);
     });
+
+
 });
