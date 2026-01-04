@@ -106,7 +106,7 @@
     font-size: 28px;
 }
 
-#modal-close-btn {
+#modal-close-button {
     cursor: pointer;
 }
 
@@ -176,6 +176,10 @@
     min-height: 120px;
 }
 
-#modal-share-btn {
+#modal-button-textarea {
+    min-height: 60px;
+}
+
+#modal-share-button {
     min-height: 40px;
 }

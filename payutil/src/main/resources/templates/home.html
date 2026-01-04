@@ -22,14 +22,14 @@
         <!-- 로그인 상태 -->
         <div th:if="${user != null}" id="link-input-wrapper">
             <input id="link-input">
-            <button id="model-open-btn" class="button" type="button">제출하기</button>
+            <button id="model-open-button" class="button" type="button">제출하기</button>
         </div>
     </div>
 
     <div id="modal">
         <div id="modal-header-wrapper">
             <h1 id="modal-title">양식을 제출해주세요. ❤️</h1>
-            <h1 id="modal-close-btn">X</h1>
+            <h1 id="modal-close-button">X</h1>
         </div>
 
         <div id="modal-image-input-form-wrapper">
@@ -42,12 +42,15 @@
         </div>
 
         <label class="modal-textarea-label">제목</label>
-        <textarea id="modal-title-textarea" class="modal-textarea" spellcheck="false" maxlength="12"></textarea>
+        <textarea id="modal-title-textarea" class="modal-textarea" spellcheck="false" maxlength="15"></textarea>
 
         <label class="modal-textarea-label">본문</label>
         <textarea id="modal-despcription-textarea" class="modal-textarea" spellcheck="false" maxlength="20"></textarea>
 
-        <button id="modal-share-btn" class="button" type="button">공유하기</button>
+        <label class="modal-textarea-label">버튼 내용</label>
+        <textarea id="modal-button-textarea" class="modal-textarea" spellcheck="false" maxlength="10"></textarea>
+
+        <button id="modal-share-button" class="button" type="button">공유하기</button>
     </div>
 
     <script th:src="@{/js/matrix.js}"></script>

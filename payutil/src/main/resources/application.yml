@@ -2,6 +2,8 @@
 # 공통 설정
 # ==================================================
 spring:
+  profiles:
+    active: local
   security:
     oauth2:
       client:
@@ -21,8 +23,8 @@ spring:
             user-name-attribute: id
 
 # ==================================================
-# local 프로파일 
-# 1. set -a && source local.env && set +a && ./gradlew bootRun --args='--spring.profiles.active=local'
+# local 프로파일(dev-tools 쓰려면 터미널에 set -a && source local.env만 하고 vscode 버튼으로 돌려야 함)
+# 1. set -a && source local.env && set +a && ./gradlew bootRun --args='--spring.profiles.active=local' 
 # 2. Ctrl + C -> exit
 # ==================================================
 ---

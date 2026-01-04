@@ -1,14 +1,13 @@
 const linkInput = document.getElementById("link-input");
 
 const modal = document.getElementById("modal");
-const openBtn = document.getElementById("model-open-btn");
-const closeBtn = document.getElementById("modal-close-btn");
+const openButton = document.getElementById("model-open-button");
+const closeButton = document.getElementById("modal-close-button");
 
 const imageInput = document.getElementById("modal-image-input");
 const imagePreview = document.getElementById("modal-image-preview");
 const imageUploadText = document.getElementById("modal-image-upload-text");
-
-openBtn.addEventListener("click", () => {
+ openButton.addEventListener("click", () => {
   const value = linkInput.value.trim();
 
   const regex = /^https:\/\/qr\.kakaopay\.com\/.+$/;
@@ -22,7 +21,7 @@ openBtn.addEventListener("click", () => {
   }
 });
 
-closeBtn.addEventListener("click", () => {
+closeButton.addEventListener("click", () => {
   imageInput.value = "";
   imagePreview.src = "";
   imagePreview.style.display = "none";
