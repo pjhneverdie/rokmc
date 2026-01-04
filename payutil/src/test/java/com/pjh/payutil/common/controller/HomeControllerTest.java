@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
-@ActiveProfiles
+@ActiveProfiles("test")
 @WebMvcTest(HomeController.class)
 @Import(HomeControllerTest.TestSecurityConfig.class)
 public class HomeControllerTest {
