@@ -1,12 +1,6 @@
-server-info:
-  base-url: https://reimagined-orbit-4jg7r59p5qv6hjxgx-8080.app.github.dev
-  port: 8080
-
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.web: DEBUG
-
+# ==================================================
+# 공통 설정
+# ==================================================
 spring:
   security:
     oauth2:
@@ -14,13 +8,10 @@ spring:
         registration:
           kakao:
             client-name: kakao
-            client-id: 4896e4018854516f94fcaba927f0b913
-            client-secret: C8Ls0AmhhrkrKSJYFSLpPRhGaH0Bn4lp
             scope:
               - profile_nickname
               - profile_image
             authorization-grant-type: authorization_code
-            redirect-uri: https://reimagined-orbit-4jg7r59p5qv6hjxgx-8080.app.github.dev/login/oauth2/code/kakao
             client-authentication-method: client_secret_post
         provider:
           kakao:
@@ -29,6 +20,65 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+# ==================================================
+# local 프로파일 
+# 1. set -a && source local.env && set +a && ./gradlew bootRun --args='--spring.profiles.active=local'
+# 2. Ctrl + C -> exit
+# ==================================================
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: ${KAKAO_REDIRECT_URI}
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+
+server-info:
+  base-url: ${BASE_URL}
+  port: ${PORT}
+
 kakao:
-  web-url: https://reimagined-orbit-4jg7r59p5qv6hjxgx-8080.app.github.dev
-  js-key: 39e38609a0cbb50d554b80c1d616e2d5
+  web-url: ${BASE_URL}
+  js-key: ${KAKAO_JS_KEY}
+
+# ==================================================
+# prod 프로파일
+# 1. set -a && source local.env && set +a && ./gradlew bootRun --args='--spring.profiles.active=prod'
+# 2. Ctrl + C -> exit
+# ==================================================
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: ${KAKAO_REDIRECT_URI}
+
+server-info:
+  base-url: ${BASE_URL}
+  port: ${PORT}
+
+kakao:
+  web-url: ${BASE_URL}
+  js-key: ${KAKAO_JS_KEY}
+
+

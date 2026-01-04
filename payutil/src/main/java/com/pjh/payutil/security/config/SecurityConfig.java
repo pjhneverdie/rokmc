@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.pjh.payutil.security.entrypoint.UnAuthenticatedEntryPoint;
-import com.pjh.payutil.security.oauth2.handler.KakaoLoginFailureHandler;
 import com.pjh.payutil.security.oauth2.handler.KakaoLoginSuccessHandler;
 import com.pjh.payutil.security.oauth2.service.KakaoOAuth2UserService;
 
@@ -23,7 +22,7 @@ public class SecurityConfig {
 
         private final KakaoOAuth2UserService kakaoOAuth2UserService;
         private final KakaoLoginSuccessHandler kakaoLoginSuccessHandler;
-        private final KakaoLoginFailureHandler kakaoLoginFailureHandler;
+
         private final UnAuthenticatedEntryPoint unAuthenticatedEntryPoint;
 
         @Bean
@@ -37,7 +36,6 @@ public class SecurityConfig {
                                                                 (userInfoEndpointConfig) -> userInfoEndpointConfig
                                                                                 .userService(kakaoOAuth2UserService))
                                                 .successHandler(kakaoLoginSuccessHandler)
-                                                .failureHandler(kakaoLoginFailureHandler)
 
                                 )
                                 .exceptionHandling(

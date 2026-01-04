@@ -29,7 +29,7 @@ public class KakaoUser implements OAuth2User {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return Role.ROLE_FREE.name();
+                return "ROLE_FREE";
             }
         });
         return collection;
