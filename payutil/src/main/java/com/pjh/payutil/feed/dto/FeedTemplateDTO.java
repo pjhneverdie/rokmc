@@ -10,7 +10,5 @@ public class FeedTemplateDTO {
     private final String contentDescription;
     private final String contentImageURL;
     private final String buttonTitle;
-    private final String kakaopayURL;
-    private final String webURL;
-    private final String jsKey;
+    private final String redirectURL;
 }

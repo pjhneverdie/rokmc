@@ -49,10 +49,8 @@ logging:
 
 server-info:
   base-url: ${BASE_URL}
-  port: ${PORT}
 
 kakao:
-  web-url: ${BASE_URL}
   js-key: ${KAKAO_JS_KEY}
 
 # ==================================================
@@ -77,10 +75,8 @@ spring:
 
 server-info:
   base-url: ${BASE_URL}
-  port: ${PORT}
 
 kakao:
-  web-url: ${BASE_URL}
   js-key: ${KAKAO_JS_KEY}
 
 ---
@@ -105,7 +101,5 @@ logging:
 
 server-info:
   base-url: https://localhost:8080
-  port: 8080
 kakao:
-  web-url: https://localhost:8080
   js-key: asdsadsadsadsad
