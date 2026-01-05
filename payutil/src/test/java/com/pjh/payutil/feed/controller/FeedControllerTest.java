@@ -45,14 +45,15 @@ public class FeedControllerTest {
                 "버튼",
                 "https://qr.kakaopay.com/abcd1234");
 
+        String[] payURLSplits = feedTemplateForm.getKakaopayURL().split("/");
+        String payQrId = payURLSplits[payURLSplits.length - 1];
+
         FeedTemplateDTO feedTemplateDTO = new FeedTemplateDTO(
                 feedTemplateForm.getContentTitle(),
                 feedTemplateForm.getContentDescription(),
                 feedTemplateForm.getContentImageURL(),
                 feedTemplateForm.getButtonTitle(),
-                feedTemplateForm.getKakaopayURL(),
-                ymlInfo.getWebURL(),
-                ymlInfo.getJsKey());
+                ymlInfo.getBaseURL() + "/feed/redirect" + "/" + payQrId);
 
         mockMvc.perform(post("/feed/share")
                 .contentType(MediaType.APPLICATION_JSON)

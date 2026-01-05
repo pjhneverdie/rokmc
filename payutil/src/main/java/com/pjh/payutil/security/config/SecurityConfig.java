@@ -41,7 +41,7 @@ public class SecurityConfig {
                                 .exceptionHandling(
                                                 (config) -> config.authenticationEntryPoint(unAuthenticatedEntryPoint))
                                 .authorizeHttpRequests((authorize) -> authorize
-                                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/errorPage")
+                                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/errorPage", "/feed/redirect/**")
                                                 .permitAll()
                                                 .anyRequest().authenticated());
 

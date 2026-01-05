@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
@@ -44,7 +43,7 @@ public class HomeControllerTest {
                 .andExpect(view().name("home"))
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attributeExists("jsKey"));
-                
+
     }
 
     @Test
@@ -52,7 +51,7 @@ public class HomeControllerTest {
 
         mockMvc.perform(get("/home"))
                 .andExpect(status().is3xxRedirection()) // UnAuthenticatedEntryPoint 작동
-                .andExpect(redirectedUrl("https://reimagined-orbit-4jg7r59p5qv6hjxgx-8080.app.github.dev/"));
+                .andExpect(redirectedUrl("https://localhost:8080/"));
 
     }
 

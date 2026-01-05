@@ -9,27 +9,40 @@ const imageInput = document.getElementById("modal-image-input");
 const imagePreview = document.getElementById("modal-image-preview");
 const imageUploadText = document.getElementById("modal-image-upload-text");
 
+let imageFile = null;
+
 window.onload = function () {
   imageInput.addEventListener("change", () => {
-    const file = imageInput.files[0];
+    imageFile = imageInput.files[0];
 
-    if (!file) return;
+    if (!imageFile) return;
 
-    if (!file.type.startsWith("image/")) {
+    if (!imageFile.type.startsWith("image/")) {
       alert("이미지 파일만 업로드할 수 있습니다.");
       imageInput.value = "";
       return;
     }
 
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      imagePreview.src = e.target.result;
-      imagePreview.style.display = "block";
-      imageUploadText.style.display = "none";
+    const options = {
+      maxSizeMB: 5,
+      maxWidthOrHeight: 1024,
+      useWebWorker: true,
     };
 
-    reader.readAsDataURL(file);
+    imageCompression(imageFile, options)
+      .then((compressedFile) => {
+        imageFile = compressedFile;
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = "block";
+          imageUploadText.style.display = "none";
+        };
+
+        reader.readAsDataURL(imageFile);
+      });
   });
 };
 
@@ -48,6 +61,7 @@ openButton.addEventListener("click", () => {
 });
 
 closeButton.addEventListener("click", () => {
+  imageFile = null;
   imageInput.value = "";
   imagePreview.src = "";
   imagePreview.style.display = "none";
@@ -62,88 +76,72 @@ shareButton.addEventListener("click", () => {
   const buttonTitle = document.getElementById('modal-button-textarea').value.trim();
   const kakaopayURL = linkInput.value.trim();
 
-  const file = imageInput.files;
-
-  if (!file) {
+  if (!imageFile) {
     alert("이미지를 업로드하세요.");
     return;
   }
 
-  const options = {
-    maxSizeMB: 5,
-    maxWidthOrHeight: 1024,
-    useWebWorker: true,
-  };
+  Kakao.Share.uploadImage({
+    file: [imageFile]
+  })
+    .then(response => {
+      const uploadedImageUrl = response.infos.original.url;
 
-  imageCompression(file[0], options)
-    .then((compressedFile) => {
-      const compressedFileWithName = new File([compressedFile], file[0].name, {
-        type: compressedFile.type,
-      });
+      const data = {
+        contentTitle,
+        contentDescription,
+        contentImageURL: uploadedImageUrl,
+        buttonTitle,
+        kakaopayURL
+      };
 
-      Kakao.Share.uploadImage({
-        file: [compressedFileWithName]
+      fetch(`${window.location.origin}/feed/share`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
       })
         .then(response => {
-          const uploadedImageUrl = response.infos.original.url;
+          if (response.ok) {
+            response.json().then(response => {
+              console.log(response);
 
-          const data = {
-            contentTitle,
-            contentDescription,
-            contentImageURL: uploadedImageUrl,
-            buttonTitle,
-            kakaopayURL
-          };
-
-          fetch(`${window.location.origin}/feed/share`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          })
-            .then(response => {
-              if (response.ok) {
-                response.json().then(response => {
-                  Kakao.Share.sendDefault({
-                    objectType: 'feed',
-                    content: {
-                      title: response.contentTitle,
-                      description: response.contentDescription,
-                      imageUrl: response.contentImageURL,
-                      link: {
-                        mobileWebUrl: response.webUrl,
-                        webUrl: response.webUrl,
-                      },
+              Kakao.Share.sendDefault({
+                objectType: 'feed',
+                content: {
+                  title: response.value["contentTitle"],
+                  description: response.value["contentDescription"],
+                  imageUrl: response.value["contentImageURL"],
+                  link: {
+                    mobileWebUrl: window.location.origin,
+                    webUrl: window.location.origin,
+                  },
+                },
+                buttons: [
+                  {
+                    title: response.value["buttonTitle"],
+                    link: {
+                      mobileWebUrl: response.value["redirectURL"],
+                      webUrl: response.value["redirectURL"],
                     },
-                    buttons: [
-                      {
-                        title: response.buttonTitle,
-                        link: {
-                          mobileWebUrl: response.kakaopayURL,
-                          webUrl: response.kakaopayURL,
-                        },
-                      },
-                    ],
-                  });
-                });
-              } else {
-                response.json().then(response => {
-                  alert(response.message);
-                });
-              }
-            })
-            .catch(e => {
-              alert("알 수 없는 오류가 발생했습니다. 개발자에게 문의하세요. pjhneverdie@gmail.com");
+                  },
+                ],
+              });
+
             });
+          } else {
+            response.json().then(response => {
+              alert(response.message);
+            });
+          }
         })
-        .catch(function (e) {
-          alert("이미지 업로드에 실패했습니다. 이미지가 용량이 너무 크지 않은지 확인하세요.");
+        .catch(e => {
+          alert("알 수 없는 오류가 발생했습니다. 개발자에게 문의하세요. pjhneverdie@gmail.com");
         });
     })
-    .catch((error) => {
-      console.error(error);
+    .catch(function (e) {
+      alert("이미지 업로드에 실패했습니다. 이미지가 용량이 너무 크지 않은지 확인하세요.");
     });
-
 
 });
