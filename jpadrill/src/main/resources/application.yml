@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: jpadrill
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/testdb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: testuser
+    password: testpass
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+# docker run -d \
+#   --name mysql-dev \
+#   -p 3306:3306 \
+#   -e MYSQL_ROOT_PASSWORD=rootpass \
+#   -e MYSQL_DATABASE=testdb \
+#   -e MYSQL_USER=testuser \
+#   -e MYSQL_PASSWORD=testpass \
+#   mysql:8.0
+
+# docker exec -it mysql-dev mysql -u root -p
+
+# CREATE USER 'testuser'@'%' IDENTIFIED BY 'testpass';
+# GRANT ALL PRIVILEGES ON testdb.* TO 'testuser'@'%';
+
