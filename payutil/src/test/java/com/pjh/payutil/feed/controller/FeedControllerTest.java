@@ -35,6 +35,8 @@ public class FeedControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static final String QR_REDIRECT_PATH = "/feed/redirect";
+
     @Test
     @WithMockKakaoUser
     void testShare() throws Exception {
@@ -45,21 +47,31 @@ public class FeedControllerTest {
                 "버튼",
                 "https://qr.kakaopay.com/abcd1234");
 
-        String[] payURLSplits = feedTemplateForm.getKakaopayURL().split("/");
+        String[] payURLSplits = feedTemplateForm.getKakaopayUrl().split("/");
         String payQrId = payURLSplits[payURLSplits.length - 1];
 
         FeedTemplateDTO feedTemplateDTO = new FeedTemplateDTO(
                 feedTemplateForm.getContentTitle(),
                 feedTemplateForm.getContentDescription(),
-                feedTemplateForm.getContentImageURL(),
+                feedTemplateForm.getKakaopayUrl(),
                 feedTemplateForm.getButtonTitle(),
-                ymlInfo.getBaseURL() + "/feed/redirect" + "/" + payQrId);
+                ymlInfo.getBaseUrl() + QR_REDIRECT_PATH + "/" + payQrId);
 
         mockMvc.perform(post("/feed/share")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(feedTemplateForm)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(toJson(createApiResponse(feedTemplateDTO))));
+    }
+
+    @Test
+    @WithMockKakaoUser
+    void testRedirect() throws Exception {
+        String payQrId = "abcd1234";
+
+        mockMvc.perform(get(QR_REDIRECT_PATH + "/{payQrId}", payQrId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("https://qr.kakaopay.com/" + payQrId));
     }
 
     private <T> ApiResponse<T> createApiResponse(T responseBody) {
@@ -80,7 +92,8 @@ public class FeedControllerTest {
                     .httpBasic(AbstractHttpConfigurer::disable)
                     .formLogin(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(authorize -> authorize
-                            .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/errorPage")
+                            .requestMatchers("/", "/css/**", "/images/**", "/js/**",
+                                    "/feed/redirect/**")
                             .permitAll()
                             .anyRequest().authenticated());
 

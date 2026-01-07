@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class FeedTemplateDTO {
     private final String contentTitle;
     private final String contentDescription;
-    private final String contentImageURL;
+    private final String contentImageUrl;
     private final String buttonTitle;
-    private final String redirectURL;
+    private final String redirectUrl;
 }

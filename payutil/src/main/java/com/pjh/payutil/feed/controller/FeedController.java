@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RequiredArgsConstructor
 @RestController
@@ -32,15 +31,15 @@ public class FeedController {
 
     @PostMapping("/feed/share")
     public ResponseEntity<ApiResponse<FeedTemplateDTO>> share(@Valid @RequestBody FeedTemplateForm FeedTemplateForm) {
-        String[] payURLSplits = FeedTemplateForm.getKakaopayURL().split("/");
+        String[] payURLSplits = FeedTemplateForm.getKakaopayUrl().split("/");
         String payQrId = payURLSplits[payURLSplits.length - 1];
 
         FeedTemplateDTO feedTemplateDTO = new FeedTemplateDTO(
                 FeedTemplateForm.getContentTitle(),
                 FeedTemplateForm.getContentDescription(),
-                FeedTemplateForm.getContentImageURL(),
+                FeedTemplateForm.getContentImageUrl(),
                 FeedTemplateForm.getButtonTitle(),
-                ymlInfo.getBaseURL() + QR_REDIRECT_PATH + "/" + payQrId);
+                ymlInfo.getBaseUrl() + QR_REDIRECT_PATH + "/" + payQrId);
 
         return ResponseEntity.ok(new ApiResponse<FeedTemplateDTO>(feedTemplateDTO, null));
     }

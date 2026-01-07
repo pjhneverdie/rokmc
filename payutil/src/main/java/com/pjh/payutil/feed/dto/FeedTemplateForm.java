@@ -23,7 +23,7 @@ public class FeedTemplateForm {
 
     @NotBlank
     @URL
-    private String contentImageURL;
+    private String contentImageUrl;
 
     @NotBlank
     @Size(min = 1, max = 10)
@@ -31,5 +31,5 @@ public class FeedTemplateForm {
 
     @NotBlank
     @Pattern(regexp = "^https://qr\\.kakaopay\\.com/.+$")
-    private String kakaopayURL;
+    private String kakaopayUrl;
 }

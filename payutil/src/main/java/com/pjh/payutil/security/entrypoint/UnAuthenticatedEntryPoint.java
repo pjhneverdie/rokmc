@@ -24,7 +24,7 @@ public class UnAuthenticatedEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
-        response.sendRedirect(ymlInfo.getBaseURL() + LOGIN_PATH);
+        response.sendRedirect(ymlInfo.getBaseUrl() + LOGIN_PATH);
     }
 
 }

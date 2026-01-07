@@ -76,7 +76,7 @@ public class HomeControllerTest {
                     .exceptionHandling(config -> config
                             .authenticationEntryPoint(entryPoint))
                     .authorizeHttpRequests(authorize -> authorize
-                            .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/errorPage")
+                            .requestMatchers("/", "/css/**", "/images/**", "/js/**")
                             .permitAll()
                             .anyRequest().authenticated());
 

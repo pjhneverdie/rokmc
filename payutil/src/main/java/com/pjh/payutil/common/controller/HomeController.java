@@ -20,6 +20,7 @@ public class HomeController {
     public String login(@AuthenticationPrincipal KakaoUser user, Model model) {
         model.addAttribute("user", user);
         model.addAttribute("jsKey", ymlInfo.getJsKey());
+        model.addAttribute("baseUrl", ymlInfo.getBaseUrl());
 
         return "home";
     }
@@ -28,6 +29,7 @@ public class HomeController {
     public String home(@AuthenticationPrincipal KakaoUser user, Model model) {
         model.addAttribute("user", user);
         model.addAttribute("jsKey", ymlInfo.getJsKey());
+        model.addAttribute("baseUrl", ymlInfo.getBaseUrl());
 
         return "home";
     }

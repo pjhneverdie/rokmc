@@ -74,7 +74,7 @@ shareButton.addEventListener("click", () => {
   const contentTitle = document.getElementById('modal-title-textarea').value.trim();
   const contentDescription = document.getElementById('modal-despcription-textarea').value.trim();
   const buttonTitle = document.getElementById('modal-button-textarea').value.trim();
-  const kakaopayURL = linkInput.value.trim();
+  const kakaopayUrl = linkInput.value.trim();
 
   if (!imageFile) {
     alert("이미지를 업로드하세요.");
@@ -90,9 +90,9 @@ shareButton.addEventListener("click", () => {
       const data = {
         contentTitle,
         contentDescription,
-        contentImageURL: uploadedImageUrl,
+        contentImageUrl: uploadedImageUrl,
         buttonTitle,
-        kakaopayURL
+        kakaopayUrl
       };
 
       fetch(`${window.location.origin}/feed/share`, {
@@ -112,7 +112,7 @@ shareButton.addEventListener("click", () => {
                 content: {
                   title: response.value["contentTitle"],
                   description: response.value["contentDescription"],
-                  imageUrl: response.value["contentImageURL"],
+                  imageUrl: response.value["contentImageUrl"],
                   link: {
                     mobileWebUrl: window.location.origin,
                     webUrl: window.location.origin,
@@ -122,8 +122,8 @@ shareButton.addEventListener("click", () => {
                   {
                     title: response.value["buttonTitle"],
                     link: {
-                      mobileWebUrl: response.value["redirectURL"],
-                      webUrl: response.value["redirectURL"],
+                      mobileWebUrl: response.value["redirectUrl"],
+                      webUrl: response.value["redirectUrl"],
                     },
                   },
                 ],

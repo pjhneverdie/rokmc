@@ -24,7 +24,7 @@ public class KakaoLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-        response.sendRedirect(serverInfo.getBaseURL() + HOME_PATH);
+        response.sendRedirect(serverInfo.getBaseUrl() + HOME_PATH);
     }
 
 }

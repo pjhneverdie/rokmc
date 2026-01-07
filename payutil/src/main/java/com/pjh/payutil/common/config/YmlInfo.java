@@ -9,12 +9,12 @@ import lombok.Getter;
 @Component
 public class YmlInfo {
 
-    private final String baseURL;
+    private final String baseUrl;
     private final String jsKey;
 
-    public YmlInfo(@Value("${server-info.base-url}") String baseURL,
+    public YmlInfo(@Value("${server-info.base-url}") String baseUrl,
             @Value("${kakao.js-key}") String jsKey) {
-        this.baseURL = baseURL;
+        this.baseUrl = baseUrl;
         this.jsKey = jsKey;
     }
 
