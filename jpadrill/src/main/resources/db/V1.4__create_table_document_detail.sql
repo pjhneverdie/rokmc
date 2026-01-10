@@ -1,5 +1,5 @@
 CREATE TABLE document_detail (
-    id INT PRIMARY KEY AUTO_INCREMENT, -- GenerationType.IDENTITY
+    id INT PRIMARY KEY AUTO_INCREMENT, -- GenerationType.IDENTITY, MapsId
     word_count INT NOT NULL,
     last_edited_by VARCHAR(30) NOT NULL, -- @Auditing
     version INT NOT NULL,

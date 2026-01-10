@@ -2,7 +2,7 @@ CREATE TABLE document (
     id INT PRIMARY KEY AUTO_INCREMENT, -- GenerationType.IDENTITY
     project_id INT NOT NULL,
     title VARCHAR(30) NOT NULL,
-    content VARCHAR(255),
+    content TEXT,
     status VARCHAR(30) NOT NULL,
     created_at DATETIME NOT NULL, -- @Auditing
     updated_at DATETIME NOT NULL, -- @Auditing

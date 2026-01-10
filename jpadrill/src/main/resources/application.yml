@@ -9,7 +9,7 @@ spring:
     password: testpass
 
   jpa:
-    show-sql: true
+    show-sql: false 
     hibernate:
       ddl-auto: none
 
@@ -17,6 +17,10 @@ spring:
     baseline-on-migrate: true
     fail-on-missing-locations: true
     locations: classpath:db/
+
+logging:
+  level:
+    p6spy: debug
 
 # docker run -d \
 #   --name mysql-dev \
