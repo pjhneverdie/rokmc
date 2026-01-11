@@ -1,5 +1,7 @@
 package com.pjh.jpadrill.document.enitity;
 
+import org.springframework.util.Assert;
+
 import com.pjh.jpadrill.common.entity.BaseEntity;
 import com.pjh.jpadrill.document.enumtype.DocumentStatus;
 import com.pjh.jpadrill.project.entity.Project;
@@ -37,23 +39,29 @@ public class Document extends BaseEntity {
 
     @Builder(access = AccessLevel.PRIVATE)
     protected Document(String title, String content, DocumentStatus documentStatus, Project project) {
+        Assert.hasText(title, "제목은 필수이며 공백일 수 없습니다.");
+        Assert.isTrue(title.length() <= 30, "제목의 길이는 30자를 초과할 수 없습니다.");
+
+        Assert.hasText(content, "내용은 필수이며 공백일 수 없습니다.");
+
+        Assert.notNull(documentStatus, "문서 상태는 필수입니다.");
+
+        Assert.notNull(project, "대상 프로젝트는 필수입니다.");
+
         this.title = title;
         this.content = content;
         this.documentStatus = documentStatus;
         this.project = project;
     }
 
-    public static Document createDocument(String title, String content, Project project) {
+    public static Document createDocument(String title, String content, DocumentStatus documentStatus,
+            Project project) {
         return Document.builder()
                 .title(title)
                 .content(content)
-                .documentStatus(DocumentStatus.DRAFT)
+                .documentStatus(documentStatus)
                 .project(project)
                 .build();
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
     }
 
 }

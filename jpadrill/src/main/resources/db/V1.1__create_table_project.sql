@@ -1,10 +1,13 @@
 CREATE TABLE project (
-    id INT PRIMARY KEY AUTO_INCREMENT, -- GenerationType.IDENTITY
+    id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
+    CONSTRAINT prevent_blank_project_name CHECK (name <> ''),
     description VARCHAR(255),
     status VARCHAR(30) NOT NULL,
+    CONSTRAINT prevent_blank_status CHECK (status <> ''),
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
-    created_at DATETIME NOT NULL, -- @Auditing
-    updated_at DATETIME NOT NULL -- @Auditing
+    CONSTRAINT check_date_range CHECK (start_date < end_date),
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL
 );

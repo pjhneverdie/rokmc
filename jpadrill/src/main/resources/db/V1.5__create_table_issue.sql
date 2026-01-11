@@ -2,12 +2,14 @@ CREATE TABLE issue (
     id INT PRIMARY KEY AUTO_INCREMENT, -- GenerationType.IDENTITY
     issue_type VARCHAR(30) NOT NULL, -- DiscriminatorColumn
     title VARCHAR(30) NOT NULL,
+    CONSTRAINT prevent_blank_title CHECK (title <> ''),
     description TEXT,
     priority INT NOT NULL,
     status VARCHAR(30) NOT NULL,
-    assignee_id INT,
-    due_date DATETIME,
-    severity VARCHAR(30),
+    CONSTRAINT prevent_blank_status CHECK (status <> ''),
+    assignee_id INT NOT NULL,
+    due_date DATETIME NOT NULL,
+    severity VARCHAR(30) NOT NULL,
     created_at DATETIME NOT NULL, -- @Auditing
     updated_at DATETIME NOT NULL, -- @Auditing
     FOREIGN KEY (assignee_id) REFERENCES member (id) ON DELETE SET NULL
