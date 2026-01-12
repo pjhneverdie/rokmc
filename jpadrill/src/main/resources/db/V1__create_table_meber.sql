@@ -2,7 +2,7 @@ CREATE TABLE member (
     id INT PRIMARY KEY AUTO_INCREMENT, -- GenerationType.IDENTITY
     email VARCHAR(30) UNIQUE NOT NULL,
     CONSTRAINT prevent_blank_email CHECK (email <> ''),
-    CONSTRAINT check_email_format CHECK (
+    CONSTRAINT prevent_not_email_format CHECK (
         email REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
     ),
     name VARCHAR(30) NOT NULL,

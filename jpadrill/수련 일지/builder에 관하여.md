@@ -54,16 +54,4 @@ public class Document extends BaseEntity {
 
 }
 ```
-이렇게 했을 때 두 가지 장점이 있음.
 
-1. 생성자 레벨 @Builder로 필요한 값들로만 객체 생성
-
-2. protected 걸어서 외부에서 무조건 Builder 쓰게 일관성 유지
-
-이 구조에서 다 좋은데 빌더 패턴도 세터처럼 값 넣는 걸 까먹으면 큰일나는 이슈가 있음.
-
-여기서 당장 선택할 수 있는 옵션이 생성자에 assert로 값을 검증하는 건데 이건 직접 돌려야 예외가 터짐.
-
-근데 @Builder(access = AccessLevel.PRIVATE) 달고 객체 내부에 생성 메서드 쓰면 코드 작성 과정에서 부터 빨간줄이 떠버리니까 더 편함.
-
-그래서 최종적으로 NoArgsConstructor(access = AccessLevel.PROTECTED) + @Builder(access = AccessLevel.PRIVATE) + protected Constructor 조합이 꽤 괜찮은 선택임.

@@ -26,7 +26,7 @@ public class Document extends BaseEntity {
     @Column(nullable = false, length = 30)
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Enumerated(EnumType.STRING)
@@ -42,9 +42,8 @@ public class Document extends BaseEntity {
         Assert.hasText(title, "제목은 필수이며 공백일 수 없습니다.");
         Assert.isTrue(title.length() <= 30, "제목의 길이는 30자를 초과할 수 없습니다.");
 
-        Assert.hasText(content, "내용은 필수이며 공백일 수 없습니다.");
-
         Assert.notNull(documentStatus, "문서 상태는 필수입니다.");
+        Assert.isTrue(documentStatus.name().length() <= 30, "문서 상태의 길이는 30자를 초과할 수 없습니다.");
 
         Assert.notNull(project, "대상 프로젝트는 필수입니다.");
 

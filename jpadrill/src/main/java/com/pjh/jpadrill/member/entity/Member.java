@@ -3,6 +3,9 @@ package com.pjh.jpadrill.member.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.util.Assert;
+
+import com.pjh.jpadrill.common.StaticValue;
 import com.pjh.jpadrill.common.entity.BaseEntity;
 import com.pjh.jpadrill.member.enumtype.MemberRole;
 import com.pjh.jpadrill.member.vo.Address;
@@ -41,12 +44,21 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
-    @Builder
-    protected Member(String email, String name, MemberRole role, Address address) {
+    @Builder(access = AccessLevel.PRIVATE)
+    private Member(String email, String name, MemberRole role, Address address) {
         this.email = email;
         this.name = name;
         this.role = role;
         this.address = address;
+    }
+
+    public static Member createMember(String email, String name, MemberRole role, Address address) {
+        return Member.builder()
+                .email(email)
+                .name(name)
+                .role(role)
+                .address(address)
+                .build();
     }
 
 }
