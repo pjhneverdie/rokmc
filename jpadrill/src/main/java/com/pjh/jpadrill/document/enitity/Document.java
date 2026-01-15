@@ -23,8 +23,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Document extends BaseEntity {
 
-    @Column(nullable = false, length = 30)
-    private String title;
+    @Column(nullable = false, length = 30) // + NOT BLANK
+    private String title; 
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -37,16 +37,7 @@ public class Document extends BaseEntity {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @Builder(access = AccessLevel.PRIVATE)
-    protected Document(String title, String content, DocumentStatus documentStatus, Project project) {
-        Assert.hasText(title, "제목은 필수이며 공백일 수 없습니다.");
-        Assert.isTrue(title.length() <= 30, "제목의 길이는 30자를 초과할 수 없습니다.");
-
-        Assert.notNull(documentStatus, "문서 상태는 필수입니다.");
-        Assert.isTrue(documentStatus.name().length() <= 30, "문서 상태의 길이는 30자를 초과할 수 없습니다.");
-
-        Assert.notNull(project, "대상 프로젝트는 필수입니다.");
-
+    private Document(String title, String content, DocumentStatus documentStatus, Project project) {
         this.title = title;
         this.content = content;
         this.documentStatus = documentStatus;
@@ -55,12 +46,7 @@ public class Document extends BaseEntity {
 
     public static Document createDocument(String title, String content, DocumentStatus documentStatus,
             Project project) {
-        return Document.builder()
-                .title(title)
-                .content(content)
-                .documentStatus(documentStatus)
-                .project(project)
-                .build();
+        return new Document(title, content, documentStatus, project);
     }
 
 }

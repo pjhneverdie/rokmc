@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.pjh.jpadrill.common.entity.BaseEntity;
 import com.pjh.jpadrill.document.enitity.Document;
+import com.pjh.jpadrill.member.entity.Member;
 import com.pjh.jpadrill.project.enumtype.ProjectStatus;
 import com.pjh.jpadrill.project.vo.ProjectPeriod;
 
@@ -16,7 +17,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
-import lombok.Builder;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Project extends BaseEntity {
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30) // + NOT BLANK
     private String name;
 
     @Column(nullable = true, length = 255)
@@ -35,9 +36,8 @@ public class Project extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
 
-    // 아 제약 깜빡함.. 날짜 당연 더 늦게 끝나야지.
     @Embedded
-    private ProjectPeriod period;
+    private ProjectPeriod period; // + start_date < end_date
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectMember> projectMembers = new ArrayList<>();
@@ -45,8 +45,7 @@ public class Project extends BaseEntity {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Document> documents = new ArrayList<>();
 
-    @Builder(access = AccessLevel.PRIVATE)
-    protected Project(String name, String description, ProjectStatus status, ProjectPeriod period) {
+    private Project(String name, String description, ProjectStatus status, ProjectPeriod period) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -54,12 +53,16 @@ public class Project extends BaseEntity {
     }
 
     public static Project createProject(String name, String description, ProjectStatus status, ProjectPeriod period) {
-        return Project.builder()
-                .name(name)
-                .description(description)
-                .status(status)
-                .period(period)
-                .build();
+        return new Project(name, description, status, period);
+    }
+
+    public void addMember(Member member, String role) {
+        ProjectMember projectMember = ProjectMember.createProjectMember(this, member, role);
+
+        this.projectMembers.add(projectMember);
+
+        // 이렇게 하는 것보다는Member 쪽에 addProjectMember 메서드를 만들어서 양방향 연관관계 설정을 해주는 것이 더 좋음
+        member.getProjectMembers().add(projectMember);
     }
 
 }

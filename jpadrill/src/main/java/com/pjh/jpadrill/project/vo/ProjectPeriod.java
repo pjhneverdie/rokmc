@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,13 +14,12 @@ import lombok.NoArgsConstructor;
 public class ProjectPeriod {
 
     @Column(nullable = false)
-    private LocalDate startDate;
+    private LocalDate startDate; // + start_date < end_date
 
     @Column(nullable = false)
-    private LocalDate endDate;
+    private LocalDate endDate; // + start_date < end_date
 
-    @Builder
-    protected ProjectPeriod(LocalDate startDate, LocalDate endDate) {
+    public ProjectPeriod(LocalDate startDate, LocalDate endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
     }

@@ -1,13 +1,12 @@
 CREATE TABLE project (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
-    CONSTRAINT prevent_blank_name CHECK (name <> ''),
+    id INT PRIMARY KEY AUTO_INCREMENT, -- GenerationType.IDENTITY
+    name VARCHAR(30) NOT NULL, -- + NOT BLANK 
     description VARCHAR(255),
-    status VARCHAR(30) NOT NULL,
-    CONSTRAINT prevent_blank_status CHECK (status <> ''),
+    status VARCHAR(30) NOT NULL, -- Enumerated
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
-    CONSTRAINT prevent_impossible_date_case CHECK (start_date < end_date),
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL
+
+-- + start_date < end_date
 );
