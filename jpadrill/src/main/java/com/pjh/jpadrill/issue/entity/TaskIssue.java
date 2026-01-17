@@ -1,18 +1,18 @@
 package com.pjh.jpadrill.issue.entity;
 
-import java.lang.reflect.Member;
 import java.time.LocalDateTime;
 
 import com.pjh.jpadrill.issue.enumtype.IssueStatus;
+import com.pjh.jpadrill.member.entity.Member;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @Entity
-@DiscriminatorColumn(name = "task")
+@DiscriminatorValue("task")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TaskIssue extends Issue {
 

@@ -1,9 +1,8 @@
 package com.pjh.jpadrill.issue.entity;
 
-import java.lang.reflect.Member;
-
 import com.pjh.jpadrill.common.entity.BaseEntity;
 import com.pjh.jpadrill.issue.enumtype.IssueStatus;
+import com.pjh.jpadrill.member.entity.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -33,7 +32,7 @@ public abstract class Issue extends BaseEntity {
     private IssueStatus status;
 
     @OneToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")
     private Member assignee;
 
     protected Issue(String title, String description, IssueStatus status, Member assignee) {

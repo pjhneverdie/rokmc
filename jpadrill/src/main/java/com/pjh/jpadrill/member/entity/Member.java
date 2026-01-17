@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.util.Assert;
 
+import com.pjh.jpadrill.common.StaticValue;
 import com.pjh.jpadrill.common.entity.BaseEntity;
 import com.pjh.jpadrill.member.enumtype.MemberRole;
 import com.pjh.jpadrill.member.vo.Address;
@@ -29,7 +30,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false, unique = true, length = 30) // + NOT BLANK + REGEX
     private String email;
 
-    @Column(nullable = false, length = 30) // + NOT BLANK 
+    @Column(nullable = false, length = 30) // + NOT BLANK
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -46,7 +47,7 @@ public class Member extends BaseEntity {
         Assert.notNull(email, "email must not be null");
         Assert.hasText(email, "email must not be blank");
         Assert.isTrue(email.length() <= 30, "email length must be <= 30");
-        Assert.isTrue(email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$"), "email format is invalid");
+        Assert.isTrue(email.matches(StaticValue.EMAIL_REGEX), "email format is invalid");
 
         Assert.notNull(name, "name must not be null");
         Assert.hasText(name, "name must not be blank");

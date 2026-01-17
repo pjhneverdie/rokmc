@@ -7,5 +7,5 @@ CREATE TABLE project_member (
     created_at DATETIME NOT NULL, -- @Auditing
     updated_at DATETIME NOT NULL, -- @Auditing
     FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE,
-    FOREIGN KEY (member_id) REFERENCES member (id) ON DELETE CASCADE,
+    FOREIGN KEY (member_id) REFERENCES member (id) ON DELETE CASCADE
 );

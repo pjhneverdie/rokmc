@@ -1,12 +1,11 @@
 package com.pjh.jpadrill.issue.entity;
 
-import java.lang.reflect.Member;
-
+import com.pjh.jpadrill.member.entity.Member;
 import com.pjh.jpadrill.issue.enumtype.IssueStatus;
 import com.pjh.jpadrill.issue.enumtype.Severity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,7 +13,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @Entity
-@DiscriminatorColumn(name = "bug")
+@DiscriminatorValue("bug")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BugIssue extends Issue {
 

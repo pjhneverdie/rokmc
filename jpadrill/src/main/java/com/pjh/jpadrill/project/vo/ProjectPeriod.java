@@ -1,6 +1,7 @@
 package com.pjh.jpadrill.project.vo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -14,12 +15,12 @@ import lombok.NoArgsConstructor;
 public class ProjectPeriod {
 
     @Column(nullable = false)
-    private LocalDate startDate; // + start_date < end_date
+    private LocalDateTime startDate; // + start_date < end_date
 
     @Column(nullable = false)
-    private LocalDate endDate; // + start_date < end_date
+    private LocalDateTime endDate; // + start_date < end_date
 
-    public ProjectPeriod(LocalDate startDate, LocalDate endDate) {
+    public ProjectPeriod(LocalDateTime startDate, LocalDateTime endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
     }
