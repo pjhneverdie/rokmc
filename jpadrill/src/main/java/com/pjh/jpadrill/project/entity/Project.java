@@ -57,12 +57,15 @@ public class Project extends BaseEntity {
     }
 
     public void addMember(Member member, String role) {
+        if (this.status == ProjectStatus.DONE) {
+            return;
+        }
+
         ProjectMember projectMember = ProjectMember.createProjectMember(this, member, role);
 
         this.projectMembers.add(projectMember);
 
-        // 이렇게 하는 것보다는Member 쪽에 addProjectMember 메서드를 만들어서 양방향 연관관계 설정을 해주는 것이 더 좋음
-        member.getProjectMembers().add(projectMember);
+        member.joinProject(projectMember);
     }
 
 }

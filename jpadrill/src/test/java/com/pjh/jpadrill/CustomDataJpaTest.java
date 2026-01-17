@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.pjh.jpadrill.common.config.JpaConfig;
 import com.pjh.jpadrill.common.config.P6spyLogMessageFormatConfiguration;
@@ -19,7 +18,6 @@ import com.pjh.jpadrill.common.config.P6spyLogMessageFormatConfiguration;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@ActiveProfiles("test")
 @DataJpaTest(showSql = false)
 @Import({ JpaConfig.class, P6spyLogMessageFormatConfiguration.class })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

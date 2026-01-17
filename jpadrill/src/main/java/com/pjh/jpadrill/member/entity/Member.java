@@ -40,7 +40,7 @@ public class Member extends BaseEntity {
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
     private Member(String email, String name, MemberRole role, Address address) {
@@ -66,6 +66,10 @@ public class Member extends BaseEntity {
 
     public static Member createMember(String email, String name, MemberRole role, Address address) {
         return new Member(email, name, role, address);
+    }
+
+    public void joinProject(ProjectMember projectMember) {
+        this.projectMembers.add(projectMember);
     }
 
 }

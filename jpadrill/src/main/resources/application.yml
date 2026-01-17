@@ -88,10 +88,8 @@ spring:
     activate:
       on-profile: test
 
-  datasource:
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:mysql:8.0://testdb
-
+  # TestContainer withReuse 걸고 사용
+  
   jpa:
     show-sql: false # P6SPY 사용
     hibernate:
