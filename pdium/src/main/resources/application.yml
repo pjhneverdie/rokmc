@@ -3,24 +3,3 @@ spring:
     name: pdium
   profiles:
     active: local
----
-spring:
-  config:
-    activate:
-      on-profile: local
-
-  docker:
-    compose:
-      enabled: true
-      file: /workspaces/codespaces-blank/pdium/docker-compose.yml    
-      lifecycle-management: start-and-stop
-
-  flyway:
-    baseline-on-migrate: true
-    fail-on-missing-locations: true
-    locations: classpath:db/
-
-jwt:
-  secret: sdadsasadsdadsas
-  access-token-validity: 3600000       # 1시간 (60 * 60 * 1000)
-  refresh-token-validity: 86400000 # 24시간 (60 * 60 * 24 * 1000)
