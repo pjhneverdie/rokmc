@@ -3,7 +3,7 @@ package com.pdium.jwt.util;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import com.pdium.security.service.MemberPrincipal;
+import com.pdium.member.dto.MemberPrincipal;
 import com.pdium.security.util.SecurityUtils;
 
 import io.jsonwebtoken.Claims;

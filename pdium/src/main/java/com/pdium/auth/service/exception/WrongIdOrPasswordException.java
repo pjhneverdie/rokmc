@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 
 import com.pdium.common.exception.BusinessException;
 
-public class UserNotFoundException extends BusinessException {
+public class WrongIdOrPasswordException extends BusinessException {
 
-    public UserNotFoundException() {
+    public WrongIdOrPasswordException() {
         super("please check id or passowrd");
     }
 

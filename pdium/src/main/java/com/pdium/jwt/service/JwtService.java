@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.pdium.jwt.config.JwtProperties;
 import com.pdium.jwt.util.JwtUtils;
+import com.pdium.member.dto.MemberPrincipal;
 import com.pdium.security.util.SecurityUtils;
 
 import io.jsonwebtoken.Claims;
@@ -33,6 +34,7 @@ public class JwtService {
     private final Key key;
     private final SignatureAlgorithm sigAlgorithm = SignatureAlgorithm.HS512;
 
+    private static final String NICKNAME_KEY = "nickname";
     private static final String ROLES_KEY = "roles";
     private static final String ACCESS_TOKEN_TYPE_KEY = "access";
     private static final String REFRESH_TOKEN_TYPE_KEY = "refresh";
@@ -59,13 +61,16 @@ public class JwtService {
                 : jwtProperties.refreshTokenValidity();
 
         JwtBuilder builder = Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(authentication.getName()) // == MemberPrincipal.getUsername() == Member.email
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + validity))
                 .claim(TYPE_DISCRIMINATOR_KEY, tokenType)
                 .signWith(key, sigAlgorithm);
 
         if (tokenType == ACCESS_TOKEN_TYPE_KEY) {
+            MemberPrincipal memberPrincipal = (MemberPrincipal) authentication.getPrincipal();
+
+            builder.claim(NICKNAME_KEY, memberPrincipal.getNickname());
             builder.claim(ROLES_KEY, SecurityUtils.getStringAuthorities(authentication));
         }
 

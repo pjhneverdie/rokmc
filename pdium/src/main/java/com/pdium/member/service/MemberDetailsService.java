@@ -1,22 +1,27 @@
-package com.pdium.security.service;
+package com.pdium.member.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.pdium.auth.service.exception.WrongIdOrPasswordException;
+import com.pdium.member.domain.Member;
+import com.pdium.member.dto.MemberPrincipal;
 import com.pdium.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class MemberDetailsService implements UserDetailsService {
+
     private final MemberRepository memberRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        memberRepository.findByEmail(username);
+        Member member = memberRepository.findByEmail(username)
+                .orElseThrow(() -> new WrongIdOrPasswordException());
 
-        return new MemberPrincipal();
+        return new MemberPrincipal(member);
     }
 
 }
