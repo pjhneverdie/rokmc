@@ -18,10 +18,18 @@ public class MemberPrincipal implements UserDetails {
 
     private final MemberRole role;
 
-    public MemberPrincipal(Member member) {
-        this.email = member.getEmail();
-        this.nickname = member.getNickname();
-        this.role = member.getRole();
+    private MemberPrincipal(String email, String nickname, MemberRole role) {
+        this.email = email;
+        this.nickname = nickname;
+        this.role = role;
+    }
+
+    public static MemberPrincipal fromMember(Member member) {
+        return new MemberPrincipal(member.getEmail(), member.getNickname(), member.getRole());
+    }
+
+    public static MemberPrincipal fromClaims(String email, String nickname, MemberRole role) {
+        return new MemberPrincipal(email, nickname, role);
     }
 
     @Override

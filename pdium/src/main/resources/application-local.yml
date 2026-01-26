@@ -15,6 +15,6 @@ spring:
     locations: classpath:db/
 
 jwt:
-  secret: sdadsasadsdadsassdadsasadsdadsassdadsasadsdadsas
+  secret: this-is-my-ultra-secure-and-very-long-secret-key-for-jwt-authentication-512-bits
   access-token-validity: 3600000       # 1시간 (60 * 60 * 1000)
   refresh-token-validity: 86400000 # 24시간 (60 * 60 * 24 * 1000)

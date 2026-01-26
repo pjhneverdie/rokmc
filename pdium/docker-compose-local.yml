@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: pdium-mysql
+    container_name: pdium-local-mysql
     ports:
       - "3306:3306"
     environment:

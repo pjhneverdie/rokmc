@@ -1,4 +1,4 @@
-package com.pdium.common.web.dto;
+package com.pdium.common.dto;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

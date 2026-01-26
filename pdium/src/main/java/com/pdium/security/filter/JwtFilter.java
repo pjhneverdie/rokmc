@@ -1,8 +1,7 @@
-package com.pdium.jwt.filter;
+package com.pdium.security.filter;
 
 import java.io.IOException;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -16,12 +15,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-@Component
 @RequiredArgsConstructor
+@Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
     private final JwtService jwtService;
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -30,7 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(accessToken) && jwtService.validateToken(accessToken)) {
             SecurityContextHolder.getContext()
-                    .setAuthentication(jwtService.getAuthenticationFromAccessToken(accessToken));
+                    .setAuthentication(jwtService.toAuthentication(accessToken));
         }
 
         filterChain.doFilter(request, response);

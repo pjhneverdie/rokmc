@@ -21,7 +21,7 @@ public class MemberDetailsService implements UserDetailsService {
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new WrongIdOrPasswordException());
 
-        return new MemberPrincipal(member);
+        return MemberPrincipal.fromMember(member);
     }
 
 }

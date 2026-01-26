@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pdium.auth.dto.CreateTokenDto;
 import com.pdium.auth.form.LoginForm;
 import com.pdium.auth.service.AuthService;
-import com.pdium.common.web.dto.ApiResponse;
+import com.pdium.common.dto.ApiResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
