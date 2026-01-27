@@ -2,4 +2,4 @@ spring:
   application:
     name: pdium
   profiles:
-    active: local
+    active: test

@@ -21,5 +21,4 @@ public class ApiControllerAdivce {
         return new ApiResponse.Failure(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR).toResponseEntity();
     }
 
-
 }

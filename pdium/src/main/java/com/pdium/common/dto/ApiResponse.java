@@ -29,4 +29,16 @@ public interface ApiResponse<T> {
         }
     }
 
+    static <T> Success<T> success(T value) {
+        return new Success<>(value);
+    }
+
+    static <T> Success<T> success(T value, String message) {
+        return new Success<>(value, message);
+    }
+
+    static Failure failure(String message, HttpStatus status) {
+        return new Failure(message, status);
+    }
+
 }

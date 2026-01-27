@@ -28,6 +28,8 @@ public class JwtFilter extends OncePerRequestFilter {
         String accessToken = resolveToken(request);
 
         if (StringUtils.hasText(accessToken) && jwtService.validateToken(accessToken)) {
+            System.out.println("dsadsa 통과함 ");
+            
             SecurityContextHolder.getContext()
                     .setAuthentication(jwtService.toAuthentication(accessToken));
         }
