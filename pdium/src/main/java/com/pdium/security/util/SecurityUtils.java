@@ -1,20 +1,20 @@
 package com.pdium.security.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-public class SecurityUtils {
+public abstract class SecurityUtils {
 
     private SecurityUtils() {
     }
 
-    public static String getStringAuthorities(Authentication authentication) {
-        return authentication.getAuthorities().stream()
+    public static String getStringAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        return authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
     }

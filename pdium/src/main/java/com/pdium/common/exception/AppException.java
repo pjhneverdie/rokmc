@@ -2,10 +2,10 @@ package com.pdium.common.exception;
 
 import org.springframework.http.HttpStatus;
 
-public abstract class BusinessException extends RuntimeException {
+public abstract class AppException extends RuntimeException {
     public abstract HttpStatus getHttpStatus();
 
-    protected BusinessException(String message) {
+    protected AppException(String message) {
         super(message);
     }
 }

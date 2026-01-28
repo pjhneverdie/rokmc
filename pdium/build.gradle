@@ -37,6 +37,8 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+	testImplementation 'org.instancio:instancio-junit:5.5.1'
+
 	testImplementation "org.testcontainers:junit-jupiter:1.19.0"
     testImplementation "org.testcontainers:mysql:1.19.0"
 	
@@ -46,8 +48,4 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs.add("-parameters")
 }

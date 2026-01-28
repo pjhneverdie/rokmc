@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import com.pdium.jwt.config.JwtProperties;
 import com.pdium.member.dto.MemberPrincipal;
@@ -49,7 +50,8 @@ public class JwtService {
 
     private String createToken(Authentication authentication, String tokenType) {
         long now = System.currentTimeMillis();
-        long validity = ACCESS_TOKEN_TYPE_KEY.equals(tokenType)
+
+        long validity = tokenType.equals(ACCESS_TOKEN_TYPE_KEY)
                 ? jwtProperties.accessTokenValidity()
                 : jwtProperties.refreshTokenValidity();
 
@@ -59,10 +61,9 @@ public class JwtService {
                 .setExpiration(new Date(now + validity))
                 .claim(TYPE_DISCRIMINATOR_KEY, tokenType);
 
-        if (ACCESS_TOKEN_TYPE_KEY.equals(tokenType)) {
-            MemberPrincipal memberPrincipal = (MemberPrincipal) authentication.getPrincipal();
-            builder.claim(NICKNAME_KEY, memberPrincipal.getNickname());
-            builder.claim(ROLES_KEY, SecurityUtils.getStringAuthorities(authentication));
+        if (tokenType.equals(ACCESS_TOKEN_TYPE_KEY)) {
+            builder.claim(NICKNAME_KEY, ((MemberPrincipal) authentication.getPrincipal()).getNickname());
+            builder.claim(ROLES_KEY, SecurityUtils.getStringAuthorities(authentication.getAuthorities()));
         }
 
         return builder.signWith(key, sigAlgorithm).compact();
@@ -77,24 +78,22 @@ public class JwtService {
         }
     }
 
-    public Authentication toAuthentication(String token) {
+    public Authentication toAuthentication(String accessToken) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJws(accessToken)
                 .getBody();
 
-        MemberRole role = MemberRole
-                .valueOf(SecurityUtils.convertToAuthorities((String) claims.get(ROLES_KEY)).getFirst().getAuthority());
+        Assert.isTrue(claims.get(TYPE_DISCRIMINATOR_KEY).equals(ACCESS_TOKEN_TYPE_KEY),
+                "엑세스 토큰에만 써라 진혁아~");
 
-        String email = claims.getSubject();
+        MemberPrincipal memberPrincipal = MemberPrincipal.fromClaims((String) claims.getSubject(),
+                (String) claims.get(NICKNAME_KEY), MemberRole
+                        .valueOf(SecurityUtils.convertToAuthorities((String) claims.get(ROLES_KEY)).getFirst()
+                                .getAuthority()));
 
-        String nickname = (String) claims.get(NICKNAME_KEY);
-
-        MemberPrincipal memberPrincipal = MemberPrincipal.fromClaims(email, nickname, role);
-
-        return new UsernamePasswordAuthenticationToken(memberPrincipal, null,
-                SecurityUtils.convertToAuthorities((String) claims.get(ROLES_KEY)));
+        return new UsernamePasswordAuthenticationToken(memberPrincipal, null, memberPrincipal.getAuthorities());
     }
 
 }

@@ -20,13 +20,11 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public CreateTokenDto.CreateTokenResponse createToken(CreateTokenDto.CreateTokenRequest creatCreateTokenRequest) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                creatCreateTokenRequest.email(), creatCreateTokenRequest.password());
-
         Authentication authentication;
 
         try {
-            authentication = authenticationManager.authenticate(authenticationToken);
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    creatCreateTokenRequest.email(), creatCreateTokenRequest.password()));
         } catch (Exception e) {
             throw new WrongIdOrPasswordException();
         }

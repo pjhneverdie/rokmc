@@ -1,5 +1,0 @@
-spring:
-  application:
-    name: pdium
-  profiles:
-    active: test

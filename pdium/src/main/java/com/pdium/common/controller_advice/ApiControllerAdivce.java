@@ -6,19 +6,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.pdium.common.dto.ApiResponse;
-import com.pdium.common.exception.BusinessException;
+import com.pdium.common.exception.AppException;
 
 @RestControllerAdvice
 public class ApiControllerAdivce {
 
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiResponse.Failure> handleBusinessException(BusinessException e) {
-        return new ApiResponse.Failure(e.getMessage(), e.getHttpStatus()).toResponseEntity();
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ApiResponse.Failure> handleBusinessException(AppException e) {
+        return ApiResponse.failure(e.getClass().getSimpleName(), e.getMessage(), e.getHttpStatus()).toResponseEntity();
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse.Failure> handleException(Exception e) {
-        return new ApiResponse.Failure(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR).toResponseEntity();
+        return ApiResponse.failure(e.getClass().getSimpleName(), e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR)
+                .toResponseEntity();
     }
 
 }

@@ -10,8 +10,9 @@ public interface ApiResponse<T> {
     String message();
 
     record Success<T>(T value, String message) implements ApiResponse<T> {
-        public Success(T value) {
-            this(value, "성공");
+        public Success {
+            if (value == null)
+                throw new IllegalArgumentException("value cannot be null");
         }
 
         public ResponseEntity<Success<T>> toResponseEntity() {
@@ -19,9 +20,11 @@ public interface ApiResponse<T> {
         }
     }
 
-    record Failure(Void value, String message, HttpStatus status) implements ApiResponse<Void> {
-        public Failure(String message, HttpStatus status) {
-            this(null, message, status);
+    // 일단 실패 시 뭐 응답 딱히 안 필요,, Void 필요 시 추가
+    record Failure(Void value, String exceptionName, String message, HttpStatus status) implements ApiResponse<Void> {
+        public Failure {
+            if (value != null)
+                throw new IllegalArgumentException("value should be null");
         }
 
         public ResponseEntity<Failure> toResponseEntity() {
@@ -30,15 +33,15 @@ public interface ApiResponse<T> {
     }
 
     static <T> Success<T> success(T value) {
-        return new Success<>(value);
+        return new Success<>(value, "ok");
     }
 
     static <T> Success<T> success(T value, String message) {
         return new Success<>(value, message);
     }
 
-    static Failure failure(String message, HttpStatus status) {
-        return new Failure(message, status);
+    static Failure failure(String exceptionName, String message, HttpStatus status) {
+        return new Failure(null, exceptionName, message, status);
     }
 
 }
