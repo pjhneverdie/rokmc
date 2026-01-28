@@ -23,7 +23,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse.Success<CreateTokenDto.CreateTokenResponse>> login(
             @Valid @RequestBody LoginForm loginForm) {
-        return ApiResponse.success(authService.createToken(loginForm.toCreateTokenRequest())).toResponseEntity();
+        return ApiResponse.createDefaultSuccessResponse(authService.createToken(loginForm.toCreateTokenRequest()))
+                .toResponseEntity();
     }
 
 }

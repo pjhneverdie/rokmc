@@ -32,15 +32,15 @@ public interface ApiResponse<T> {
         }
     }
 
-    static <T> Success<T> success(T value) {
+    static <T> Success<T> createDefaultSuccessResponse(T value) {
         return new Success<>(value, "ok");
     }
 
-    static <T> Success<T> success(T value, String message) {
+    static <T> Success<T> createCustomMessageSuccessResponse(T value, String message) {
         return new Success<>(value, message);
     }
 
-    static Failure failure(String exceptionName, String message, HttpStatus status) {
+    static Failure createDefaultFailureResponse(String exceptionName, String message, HttpStatus status) {
         return new Failure(null, exceptionName, message, status);
     }
 

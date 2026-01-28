@@ -37,7 +37,7 @@ public class JwtFilterTest extends TestSecurityMockConfig {
 
         @GetMapping("/api/protected")
         public ResponseEntity<ApiResponse.Success<String>> protectedApi() {
-            return ApiResponse.success("ok").toResponseEntity();
+            return ApiResponse.createDefaultSuccessResponse("ok").toResponseEntity();
         }
 
     }
@@ -53,12 +53,10 @@ public class JwtFilterTest extends TestSecurityMockConfig {
         when(jwtService.toAuthentication(token)).thenReturn(AuthenticationMother.createAdminAuthentication());
 
         // Then
-        ApiResponse.Success<String> response = ApiResponse.success("ok");
-
         mockMvc.perform(get("/api/protected")
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(content().json(WebMvcTestHelper.toJson(response)));
+                .andExpect(content().json(WebMvcTestHelper.toJson(ApiResponse.createDefaultSuccessResponse("ok"))));
     }
 
     @Test
@@ -72,15 +70,14 @@ public class JwtFilterTest extends TestSecurityMockConfig {
 
         // Then
         JwtAuthenticationEntryPoint.UnAuthorizedException ex = new JwtAuthenticationEntryPoint.UnAuthorizedException();
-        ApiResponse.Failure response = ApiResponse.failure(
-                ex.getClass().getSimpleName(),
-                ex.getMessage(),
-                ex.getHttpStatus());
 
         mockMvc.perform(get("/api/protected")
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().json(WebMvcTestHelper.toJson(response)));
+                .andExpect(content().json(WebMvcTestHelper.toJson(ApiResponse.createDefaultFailureResponse(
+                        ex.getClass().getSimpleName(),
+                        ex.getMessage(),
+                        ex.getHttpStatus()))));
     }
 
 }

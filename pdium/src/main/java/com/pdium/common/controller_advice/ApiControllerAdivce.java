@@ -13,12 +13,15 @@ public class ApiControllerAdivce {
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ApiResponse.Failure> handleBusinessException(AppException e) {
-        return ApiResponse.failure(e.getClass().getSimpleName(), e.getMessage(), e.getHttpStatus()).toResponseEntity();
+        return ApiResponse.createDefaultFailureResponse(e.getClass().getSimpleName(), e.getMessage(), e.getHttpStatus())
+                .toResponseEntity();
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse.Failure> handleException(Exception e) {
-        return ApiResponse.failure(e.getClass().getSimpleName(), e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR)
+        return ApiResponse
+                .createDefaultFailureResponse(e.getClass().getSimpleName(), e.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR)
                 .toResponseEntity();
     }
 

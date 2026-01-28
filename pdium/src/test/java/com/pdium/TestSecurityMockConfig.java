@@ -9,7 +9,7 @@ import com.pdium.security.config.SecurityConfig;
 import com.pdium.security.entrypoint.JwtAuthenticationEntryPoint;
 import com.pdium.security.filter.JwtFilter;
 
-// SecurityConfig 그대로 목킹
+// 실제 내 SecurityConfig 그대로 목킹
 @Import({ SecurityConfig.class, JwtFilter.class, JwtAuthenticationEntryPoint.class })
 public class TestSecurityMockConfig {
 

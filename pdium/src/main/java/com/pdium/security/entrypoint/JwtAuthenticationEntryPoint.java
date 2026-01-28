@@ -35,7 +35,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         response.getWriter()
                 .write(objectMapper.writeValueAsString(
-                        ApiResponse.failure(ex.getClass().getSimpleName(), ex.getMessage(), ex.getHttpStatus())));
+                        ApiResponse.createDefaultFailureResponse(ex.getClass().getSimpleName(), ex.getMessage(),
+                                ex.getHttpStatus())));
     }
 
     public static class UnAuthorizedException extends AppException {
