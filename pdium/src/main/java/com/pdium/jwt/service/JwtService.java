@@ -1,9 +1,10 @@
 package com.pdium.jwt.service;
 
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -35,8 +36,13 @@ public class JwtService {
     private static final String REFRESH_TOKEN_TYPE_KEY = "refresh";
     private static final String TYPE_DISCRIMINATOR_KEY = "token_type";
 
-    public JwtService(@Autowired JwtProperties jwtProperties) {
+    private static final String REFRESH_TOKEN_PREFIX = "RT:";
+
+    private final StringRedisTemplate stringRedisTemplate;
+
+    public JwtService(JwtProperties jwtProperties, StringRedisTemplate stringRedisTemplate) {
         this.jwtProperties = jwtProperties;
+        this.stringRedisTemplate = stringRedisTemplate;
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.secret()));
     }
 
@@ -66,7 +72,16 @@ public class JwtService {
             builder.claim(ROLES_KEY, SecurityUtils.getStringAuthorities(authentication.getAuthorities()));
         }
 
-        return builder.signWith(key, sigAlgorithm).compact();
+        String token = builder.signWith(key, sigAlgorithm).compact();
+
+        if (tokenType.equals(REFRESH_TOKEN_TYPE_KEY)) {
+            stringRedisTemplate.opsForValue().set(
+                    REFRESH_TOKEN_PREFIX + authentication.getName(),
+                    token,
+                    Duration.ofMillis(validity));
+        }
+
+        return token;
     }
 
     public boolean validateToken(String token) {

@@ -11,6 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@ExtendWith(TestContainerExtension.class)
-public @interface TestContainerInitializer {
+@ExtendWith(TestRedisContainerExtension.class)
+public @interface TestRedisContainerInitializer {
 }

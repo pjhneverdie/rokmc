@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 import org.testcontainers.containers.MySQLContainer;
 
-public class TestContainerExtension implements BeforeAllCallback {
+public class TestMysqlContainerExtension implements BeforeAllCallback {
 
     private static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.0");
 

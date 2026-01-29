@@ -1,11 +1,12 @@
 package com.pdium.jwt.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Component
+@ConfigurationProperties(prefix = "jwt")
 public record JwtProperties(
-                @Value("${jwt.secret}") String secret,
-                @Value("${jwt.access-token-validity}") long accessTokenValidity,
-                @Value("${jwt.refresh-token-validity}") long refreshTokenValidity) {
+        String secret,
+        long accessTokenValidity,
+        long refreshTokenValidity) {
 }
