@@ -10,7 +10,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -22,16 +21,13 @@ import com.pdium.mother.AuthenticationMother;
 import com.pdium.redis.config.RedisAutoSetProperties;
 import com.pdium.redis.config.RedisConfig;
 
-@ActiveProfiles("test") // test 프로필 사용
-@TestRedisContainerInitializer // 도커 띄우고, test 프로필에 redis 관련 설정 채워 줌
-@ExtendWith(SpringExtension.class) // Junit은 스프링을 모름 DI도 모름. Junit한테 스프링 스타일 알려주는 역할
+@TestRedisContainerInitializer // 도커 + redis 관련 설정 자바 시스템 프로퍼티에 채워 줌
+@ExtendWith(SpringExtension.class) // Junit에서 스프링 테스트 콘텍스트를 사용하게 해 줌
 @ContextConfiguration(classes = { RedisConfig.class, JwtService.class }) // @SpringBootTest 너무 무거우
-// 실제 환경에서는 @ConfigurationPropertiesScan 쓰는 중
-// 테스트 환경은 @EnableConfigurationProperties 사용해야 함
-// 일반적인 빈이랑은 달라서 @Import 안 먹힘 @EnableConfigurationProperties 써야 함
+// 테스트 환경은 @ConfigurationPropertiesScan가 없음
+// @EnableConfigurationProperties를 명시해서 빈에 넣어야 함
 @EnableConfigurationProperties({ RedisAutoSetProperties.class, JwtProperties.class })
-// @ExtendWith(SpringExtension.class)로 Junit한테 스프링 콘텍스트 가르쳐도 yml은 못 읽음
-// 그래서 @TestPropertySource + factory = YamlPropertySourceFactory.class로 추가 학습 시키는 거임
+// 왜인지는 모르겠지만 @ActiveProfiles가 안 들음.. TestPropertySource 써야 함
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertySourceFactory.class)
 public class JwtServiceTest {
 
@@ -56,7 +52,7 @@ public class JwtServiceTest {
     }
 
     @Test
-    @DisplayName("리프레쉬 토큰 생성, 검증 성공 및 Authentication으로 변환 실패 테스트")
+    @DisplayName("리프레쉬 토큰 생성, 저장, 검증 성공 및 Authentication으로 변환 실패 테스트")
     public void testCreateRefreshToken() {
         // Given
         Authentication authentication = AuthenticationMother.createAdminAuthentication();
@@ -70,7 +66,7 @@ public class JwtServiceTest {
             jwtService.toAuthentication(refreshToken);
         });
 
-        String savedToken = redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        String savedToken = redisTemplate.opsForValue().get("RT" + authentication.getName());
 
         // Then
         assertNotNull(savedToken);

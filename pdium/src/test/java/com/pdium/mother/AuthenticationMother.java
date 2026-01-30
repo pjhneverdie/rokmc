@@ -11,11 +11,13 @@ public abstract class AuthenticationMother {
     }
 
     public static MemberPrincipal createAdminMember() {
-        return MemberPrincipal.fromClaims("admin@example.com", "AdminUser", MemberRole.ROLE_PJH);
+        return MemberPrincipal.creatMemberPrincipalForSecurityContext("admin@example.com", "AdminUser",
+                MemberRole.ROLE_PJH, "");
     }
 
     public static MemberPrincipal createGuestMember() {
-        return MemberPrincipal.fromClaims("test@example.com", "TestUser", MemberRole.ROLE_GUEST);
+        return MemberPrincipal.creatMemberPrincipalForSecurityContext("test@example.com", "TestUser",
+                MemberRole.ROLE_GUEST, "");
     }
 
     public static UsernamePasswordAuthenticationToken createAdminAuthentication() {

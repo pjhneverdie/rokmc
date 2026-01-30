@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.pdium.auth.dto.AuthenticateRequest;
 import com.pdium.auth.dto.TokenResponse;
 import com.pdium.auth.service.exception.WrongIdOrPasswordException;
-
 import com.pdium.jwt.service.JwtService;
 
 import lombok.RequiredArgsConstructor;

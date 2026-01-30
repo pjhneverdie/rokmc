@@ -55,7 +55,7 @@ public class SecurityConfig {
                 exceptionHandling -> exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/").permitAll()
+                .requestMatchers("/login").permitAll()
                 .anyRequest().authenticated());
 
         return http.build();
