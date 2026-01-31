@@ -1,0 +1,20 @@
+package com.pdium.jwt.config;
+
+import java.security.Key;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+
+@Configuration
+public class JwtConfig {
+
+    @Bean
+    public Key jwtSigningKey(JwtProperties jwtProperties) {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.secret());
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+}

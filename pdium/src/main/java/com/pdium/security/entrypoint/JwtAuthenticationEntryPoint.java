@@ -27,22 +27,22 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
+        UnAuthorizedException e = new UnAuthorizedException();
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-        UnAuthorizedException ex = new UnAuthorizedException();
+        ApiResponse<Void> body = ApiResponse.createDefaultFailureResponse(e.getClass().getSimpleName(), e.getMessage(),
+                e.getHttpStatus());
 
-        response.getWriter()
-                .write(objectMapper.writeValueAsString(
-                        ApiResponse.createDefaultFailureResponse(ex.getClass().getSimpleName(), ex.getMessage(),
-                                ex.getHttpStatus())));
+        response.getWriter().write(objectMapper.writeValueAsString(body));
     }
 
     public static class UnAuthorizedException extends AppException {
 
         public UnAuthorizedException() {
-            super("로그인이 필요한 서비스입니다.");
+            super("login please");
         }
 
         @Override

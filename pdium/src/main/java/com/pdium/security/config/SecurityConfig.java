@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.pdium.member.service.MemberDetailsService;
 import com.pdium.security.entrypoint.JwtAuthenticationEntryPoint;
 import com.pdium.security.filter.JwtFilter;
+import com.pdium.security.filter.JwtFilterExceptionHandlingFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JwtFilterExceptionHandlingFilter jwtFilterExceptionHandlingFitler;
     private final JwtFilter jwtFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
@@ -50,12 +52,13 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtFilterExceptionHandlingFitler, JwtFilter.class);
 
         http.exceptionHandling(
                 exceptionHandling -> exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login").permitAll()
+                .requestMatchers("/login", "/reissue").permitAll()
                 .anyRequest().authenticated());
 
         return http.build();

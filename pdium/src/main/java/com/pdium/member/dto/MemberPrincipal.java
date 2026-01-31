@@ -30,6 +30,11 @@ public class MemberPrincipal implements UserDetails {
         this.accessToken = accessToken;
     }
 
+    public static MemberPrincipal creatMemberPrincipalForReIssue(Member member) {
+        return new MemberPrincipal(member.getEmail(), member.getNickname(), null, member.getRole(),
+                null);
+    }
+
     public static MemberPrincipal creatMemberPrincipalForAuthenticate(Member member) {
         return new MemberPrincipal(member.getEmail(), member.getNickname(), member.getPassword(), member.getRole(),
                 null);
