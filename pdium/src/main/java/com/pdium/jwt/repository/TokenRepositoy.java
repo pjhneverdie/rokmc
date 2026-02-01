@@ -13,8 +13,10 @@ public class TokenRepositoy {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    public void saveRefreshToken(String key, String refreshToken, long validity) {
+    public String saveRefreshToken(String key, String refreshToken, long validity) {
         stringRedisTemplate.opsForValue().set(key, refreshToken, Duration.ofMillis(validity));
+
+        return refreshToken;
     }
 
     public boolean isRefreshTokenExist(String key) {

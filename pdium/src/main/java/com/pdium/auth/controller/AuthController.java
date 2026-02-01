@@ -3,7 +3,6 @@ package com.pdium.auth.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pdium.auth.dto.AuthenticateDto;
-import com.pdium.auth.dto.LogoutDto;
 import com.pdium.auth.dto.TokenResponse;
 import com.pdium.auth.form.LoginForm;
 import com.pdium.auth.service.AuthService;
@@ -41,7 +40,7 @@ public class AuthController {
         @PostMapping("/logout")
         public ResponseEntity<ApiResponse.Success<Void>> logout(
                         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-                authService.logout(new LogoutDto(memberPrincipal.getUsername(), memberPrincipal.getAccessToken()));
+                authService.logout(memberPrincipal.getAccessToken());
 
                 return ApiResponse.createEmptySuccessResponse().toResponseEntity();
         }

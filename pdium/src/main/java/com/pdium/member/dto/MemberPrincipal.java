@@ -30,16 +30,15 @@ public class MemberPrincipal implements UserDetails {
         this.accessToken = accessToken;
     }
 
-    public static MemberPrincipal creatMemberPrincipalForReIssue(Member member) {
-        return new MemberPrincipal(member.getEmail(), member.getNickname(), null, member.getRole(),
-                null);
-    }
-
+    // 로그인용 AuthenticationManager가 사용하는 MemberPrincipal
+    // 비밀번호는 필요하고 엑세스 토큰은 필요 없음!
     public static MemberPrincipal creatMemberPrincipalForAuthenticate(Member member) {
         return new MemberPrincipal(member.getEmail(), member.getNickname(), member.getPassword(), member.getRole(),
                 null);
     }
 
+    // 시큐리티 콘텍스트에 저장되는 MemberPrincipal
+    // 비밀번호 필요 없음!
     public static MemberPrincipal creatMemberPrincipalForSecurityContext(String email, String nickname, MemberRole role,
             String accessToken) {
         return new MemberPrincipal(email, nickname, null, role, accessToken);
@@ -56,7 +55,7 @@ public class MemberPrincipal implements UserDetails {
         return this.password;
     }
 
-    // Authentication.getName() 했을 때 나오는 값.
+    // Authentication.getName() 했을 때 나오는 값
     @Override
     public String getUsername() {
         return this.email;

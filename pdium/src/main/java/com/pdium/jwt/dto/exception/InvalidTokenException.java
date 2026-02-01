@@ -1,14 +1,13 @@
-package com.pdium.jwt.service.exception;
+package com.pdium.jwt.dto.exception;
 
 import org.springframework.http.HttpStatus;
 
 import com.pdium.common.exception.AppException;
 
-public class ExpiredTokenException extends AppException {
+public class InvalidTokenException extends AppException {
 
-    public ExpiredTokenException() {
-        super("you are using expired jwt");
-
+    public InvalidTokenException() {
+        super("invalid token");
     }
 
     @Override

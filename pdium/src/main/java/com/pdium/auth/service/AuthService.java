@@ -7,7 +7,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.pdium.auth.dto.AuthenticateDto;
-import com.pdium.auth.dto.LogoutDto;
 import com.pdium.auth.dto.TokenResponse;
 import com.pdium.auth.service.exception.WrongIdOrPasswordException;
 import com.pdium.common.exception.AppException;
@@ -42,8 +41,8 @@ public class AuthService {
         return authentication;
     }
 
-    public void logout(LogoutDto logoutDto) {
-        jwtService.nullifyJwt(logoutDto.email(), logoutDto.accessToken());
+    public void logout(String accessToken) {
+        jwtService.nullifyJwt(accessToken);
     }
 
     public TokenResponse issueToken(MemberPrincipal memberPrincipal) {
@@ -56,8 +55,7 @@ public class AuthService {
                 nickanme, stringAuthorities);
 
         CreateTokenDto.CreateRefreshTokenDto createRefreshTokenDto = new CreateTokenDto.CreateRefreshTokenDto(
-                email,
-                nickanme, stringAuthorities);
+                email);
 
         return new TokenResponse(
                 jwtService.createAccessToken(createAccessTokenDto),
@@ -71,6 +69,8 @@ public class AuthService {
             throw e;
         }
 
+        // 유저 정보가 바뀌었을 수도 있음.
+        // 엑세스 토큰에 유저 정보를 담는 한, 재발급 시 항상 db를 조회해야 함.
         MemberPrincipal memberPrincipal = (MemberPrincipal) memberDetailsService
                 .loadUserByUsername(jwtService.getEmailFromToken(refreshToken));
 

@@ -1,5 +1,7 @@
 package com.pdium.security.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -19,6 +21,7 @@ import com.pdium.member.service.MemberDetailsService;
 import com.pdium.security.entrypoint.JwtAuthenticationEntryPoint;
 import com.pdium.security.filter.JwtFilter;
 import com.pdium.security.filter.JwtFilterExceptionHandlingFilter;
+import com.pdium.security.handler.JwtAccessDeniedHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,9 +32,13 @@ public class SecurityConfig {
 
     private final JwtFilterExceptionHandlingFilter jwtFilterExceptionHandlingFitler;
     private final JwtFilter jwtFilter;
+    private final JwtAccessDeniedHandler JwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
     private final MemberDetailsService memberDetailsService;
+
+    public static final List<String> EXCLUDE_URLS = List.of(
+            "auth/login",
+            "auth/reissue");
 
     @Bean
     @Profile({ "local", "test" })
@@ -55,11 +62,13 @@ public class SecurityConfig {
         http.addFilterBefore(jwtFilterExceptionHandlingFitler, JwtFilter.class);
 
         http.exceptionHandling(
-                exceptionHandling -> exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint));
+                exceptionHandling -> exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(JwtAccessDeniedHandler));
 
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/reissue").permitAll()
-                .anyRequest().authenticated());
+        http.authorizeHttpRequests(auth -> {
+            EXCLUDE_URLS.forEach(url -> auth.requestMatchers(url).permitAll());
+            auth.anyRequest().authenticated();
+        });
 
         return http.build();
     }

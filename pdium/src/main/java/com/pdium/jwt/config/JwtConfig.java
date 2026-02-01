@@ -13,8 +13,7 @@ public class JwtConfig {
 
     @Bean
     public Key jwtSigningKey(JwtProperties jwtProperties) {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.secret());
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.secret()));
     }
 
 }

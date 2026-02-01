@@ -38,12 +38,12 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String getEmailFromToken(String token) {
+    public String getSubject(String token) {
         return parseClaims(token).getSubject();
     }
 
-    public long getRemainingValidity(String token) {
-        return Math.max(parseClaims(token).getExpiration().getTime() - System.currentTimeMillis(), 0);
+    public long getValidity(String token) {
+        return parseClaims(token).getExpiration().getTime();
     }
 
 }
