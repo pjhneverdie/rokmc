@@ -13,43 +13,26 @@ public class TokenRepositoy {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    private static final String REFRESH_TOKEN_PREFIX = "rt";
-    private static final String BLACKLIST_PREFIX = "black_";
-    private static final String BLACKLIST_REASON = "logout";
+    public void saveRefreshToken(String key, String refreshToken, long validity) {
+        stringRedisTemplate.opsForValue().set(key, refreshToken, Duration.ofMillis(validity));
+    }
 
-    // 리프레쉬 토큰이 레디스에 있는지 확인하는 메서드
-    public boolean isRefreshTokenExist(String email) {
-        String key = REFRESH_TOKEN_PREFIX + email;
-
+    public boolean isRefreshTokenExist(String key) {
         return Boolean.TRUE.equals(stringRedisTemplate.hasKey(key));
     }
 
-    // 리프레쉬 토큰 저장 메서드
-    public void saveRefreshToken(String email, String refreshToken, long expiration) {
-        String key = REFRESH_TOKEN_PREFIX + email;
-
-        stringRedisTemplate.opsForValue().set(key, refreshToken, Duration.ofMillis(expiration));
+    public void deleteRefreshToken(String key) {
+        stringRedisTemplate.delete(key);
     }
 
-    // 리프레쉬 토큰 삭제 메서드
-    public void deleteRefreshToken(String email) {
-        stringRedisTemplate.delete(REFRESH_TOKEN_PREFIX + email);
-    }
-
-    // 엑세스 토큰 블랙리스트에 추가 메서드
-    public void blackAccessToken(String accessToken, long remainingExpiration) {
-        String key = BLACKLIST_PREFIX + accessToken;
-
+    public void blackAccessToken(String key, String reason, long validity) {
         stringRedisTemplate.opsForValue().set(
                 key,
-                BLACKLIST_REASON,
-                Duration.ofMillis(remainingExpiration));
+                reason,
+                Duration.ofMillis(validity));
     }
 
-    // 엑세스 토큰이 블랙리스트에 있는지 확인 메서드
-    public boolean isBlacked(String accessToken) {
-        String key = BLACKLIST_PREFIX + accessToken;
-
+    public boolean isBlacked(String key) {
         return Boolean.TRUE.equals(stringRedisTemplate.hasKey(key));
     }
 

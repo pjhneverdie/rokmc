@@ -17,6 +17,7 @@ import com.pdium.common.dto.ApiResponse;
 import com.pdium.mother.AuthenticationMother;
 import com.pdium.security.entrypoint.JwtAuthenticationEntryPoint;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,7 +50,7 @@ public class JwtFilterTest extends TestSecurityMockConfig {
         String token = "accessToken";
 
         // When
-        when(jwtService.validateToken(token)).thenReturn(true);
+        doNothing().when(jwtService.validateToken(token));
         when(jwtService.toAuthentication(token)).thenReturn(AuthenticationMother.createAdminAuthentication());
 
         // Then

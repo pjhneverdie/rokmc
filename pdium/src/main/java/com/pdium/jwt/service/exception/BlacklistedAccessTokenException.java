@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 
 import com.pdium.common.exception.AppException;
 
-public class BlacklistedAccessToken extends AppException {
+public class BlacklistedAccessTokenException extends AppException {
 
-    public BlacklistedAccessToken() {
+    public BlacklistedAccessTokenException() {
         super("invalid access token");
     }
 

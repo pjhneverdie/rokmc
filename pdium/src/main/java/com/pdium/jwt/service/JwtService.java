@@ -1,18 +1,19 @@
 package com.pdium.jwt.service;
 
-import java.security.Key;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import com.pdium.jwt.config.JwtContants;
 import com.pdium.jwt.config.JwtProperties;
 import com.pdium.jwt.dto.CreateTokenDto;
 import com.pdium.jwt.repository.TokenRepositoy;
+import com.pdium.jwt.service.exception.BlacklistedAccessTokenException;
 import com.pdium.jwt.service.exception.ExpiredTokenException;
 import com.pdium.jwt.service.exception.InvalidTokenException;
-import com.pdium.jwt.service.exception.BlacklistedAccessToken;
 import com.pdium.jwt.service.exception.RefreshTokenDoesNotExistException;
 import com.pdium.member.dto.MemberPrincipal;
 import com.pdium.member.enum_type.MemberRole;
@@ -20,10 +21,7 @@ import com.pdium.security.util.SecurityUtils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
@@ -32,83 +30,57 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtService {
 
-    private final Key key;
+    private final JwtProvider jwtProvider;
     private final JwtProperties jwtProperties;
     private final TokenRepositoy tokenRepository;
-    private final SignatureAlgorithm sigAlgorithm;
-
-    private static final String ROLES_KEY = "roles";
-    private static final String NICKNAME_KEY = "nickname";
-    private static final String ACCESS_TOKEN_TYPE_KEY = "access";
-    private static final String REFRESH_TOKEN_TYPE_KEY = "refresh";
-    private static final String TYPE_DISCRIMINATOR_KEY = "token_type";
-
-    private Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
 
     // 엑세스 토큰 생성 메서드
-    public String createAccessToken(CreateTokenDto.CreateAccessTokenDto accessTokenDto) {
-        return createToken(accessTokenDto, ACCESS_TOKEN_TYPE_KEY);
+    public String createAccessToken(CreateTokenDto.CreateAccessTokenDto cTokenDto) {
+        Map<String, Object> claims = new HashMap<>();
+
+        claims.put(JwtContants.NICKNAME_KEY, cTokenDto.nickname());
+        claims.put(JwtContants.ROLES_KEY, cTokenDto.stringAuthorities());
+        claims.put(JwtContants.TYPE_DISCRIMINATOR_KEY, JwtContants.TokenType.ACCESS.getValue());
+
+        String sub = cTokenDto.email();
+        long accessTokenValidity = jwtProperties.accessTokenValidity();
+
+        return jwtProvider.createToken(sub, claims, accessTokenValidity);
     }
 
-    // 리프레시 토큰 생성 메서드
-    public String createRefreshToken(CreateTokenDto.CreateRefreshTokenDto refreshTokenDto) {
-        String refreshToken = createToken(refreshTokenDto, REFRESH_TOKEN_TYPE_KEY);
+    // 리프레시 토큰 생성 및 저장 메서드
+    public String createAndSaveRefreshToken(CreateTokenDto.CreateRefreshTokenDto cTokenDto) {
+        Map<String, Object> claims = new HashMap<>();
 
-        tokenRepository.saveRefreshToken(refreshTokenDto.email(), refreshToken, getRemainingExpiration(refreshToken));
+        claims.put(JwtContants.NICKNAME_KEY, cTokenDto.nickname());
+        claims.put(JwtContants.ROLES_KEY, cTokenDto.stringAuthorities());
+        claims.put(JwtContants.TYPE_DISCRIMINATOR_KEY, JwtContants.TokenType.REFRESH.getValue());
+
+        String sub = cTokenDto.email();
+        long refreshTokenValidity = jwtProperties.refreshTokenValidity();
+
+        String refreshToken = jwtProvider.createToken(sub, claims, refreshTokenValidity);
+
+        tokenRepository.saveRefreshToken(sub, refreshToken, jwtProvider.getRemainingValidity(refreshToken));
 
         return refreshToken;
     }
 
-    // 토큰 생성 공통 메서드
-    private String createToken(CreateTokenDto dto, String tokenType) {
-        long now = System.currentTimeMillis();
-        long validity = tokenType.equals(ACCESS_TOKEN_TYPE_KEY)
-                ? jwtProperties.accessTokenValidity()
-                : jwtProperties.refreshTokenValidity();
-
-        JwtBuilder builder = Jwts.builder()
-                .setSubject(dto.email())
-                .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + validity))
-                .claim(TYPE_DISCRIMINATOR_KEY, tokenType);
-
-        if (tokenType.equals(ACCESS_TOKEN_TYPE_KEY)) {
-            builder.claim(NICKNAME_KEY, dto.nickname());
-            builder.claim(ROLES_KEY, dto.stringAuthorities());
-        }
-
-        return builder.signWith(key, sigAlgorithm).compact();
-    }
-
-    // 모든 토큰 무효화, 엑세스 토큰은 블랙리스트에 등록 / 리프레쉬 토큰은 삭제
+    // 모든 토큰 무효화 메서드: 엑세스 토큰은 블랙리스트에 등록, 리프레쉬 토큰은 삭제
     public void nullifyJwt(String email, String accessToken) {
-        tokenRepository.deleteRefreshToken(email);
-        tokenRepository.blackAccessToken(accessToken, getRemainingExpiration(accessToken));
+        tokenRepository.deleteRefreshToken(JwtContants.REFRESH_TOKEN_PREFIX + email);
+
+        tokenRepository.blackAccessToken(JwtContants.BLACKLIST_PREFIX + accessToken,
+                JwtContants.BlackReason.LOGOUT.getValue(),
+                jwtProvider.getRemainingValidity(accessToken));
     }
 
-    // 토큰에서 이메일 추출 메서드
-    public String getEmailFromToken(String token) {
-        return parseClaims(token).getSubject();
-    }
-
-    // 토큰 남은 유효 기간 확인 메서드
-    private long getRemainingExpiration(String token) {
-        return Math.max(parseClaims(token).getExpiration().getTime() - System.currentTimeMillis(), 0);
-    }
-
-    // 토큰 검증 메서드
     public void validateToken(String token) {
         Claims claims;
 
         // AppException으로 throw
         try {
-            claims = parseClaims(token);
+            claims = jwtProvider.parseClaims(token);
         } catch (ExpiredJwtException e) {
             throw new ExpiredTokenException();
         } catch (SignatureException e) {
@@ -117,26 +89,26 @@ public class JwtService {
             throw new InvalidTokenException();
         }
 
-        if (claims.get(TYPE_DISCRIMINATOR_KEY).equals(ACCESS_TOKEN_TYPE_KEY)
+        if (claims.get(JwtContants.TYPE_DISCRIMINATOR_KEY).equals(JwtContants.TokenType.ACCESS.getValue())
                 && tokenRepository.isBlacked(token)) {
-            throw new BlacklistedAccessToken();
+            throw new BlacklistedAccessTokenException();
         }
 
-        if (claims.get(TYPE_DISCRIMINATOR_KEY).equals(REFRESH_TOKEN_TYPE_KEY)
-                && !tokenRepository.isRefreshTokenExist(getEmailFromToken(token))) {
+        if (claims.get(JwtContants.TYPE_DISCRIMINATOR_KEY).equals(JwtContants.TokenType.REFRESH.getValue())
+                && !tokenRepository.isRefreshTokenExist(jwtProvider.getEmailFromToken(token))) {
             throw new RefreshTokenDoesNotExistException();
         }
     }
 
-    // 엑세스 토큰 -> Authentication 변환 메서드 (JwtFilter에서 SecurityContext 설정할 때 사용)
     public Authentication toAuthentication(String accessToken) {
-        Claims claims = parseClaims(accessToken);
+        Claims claims = jwtProvider.parseClaims(accessToken);
 
         MemberPrincipal memberPrincipal = MemberPrincipal.creatMemberPrincipalForSecurityContext(
                 (String) claims.getSubject(), // email
-                (String) claims.get(NICKNAME_KEY),
+                (String) claims.get(JwtContants.NICKNAME_KEY),
                 MemberRole
-                        .valueOf(SecurityUtils.convertToAuthorities((String) claims.get(ROLES_KEY)).getFirst()
+                        .valueOf(SecurityUtils.convertToAuthorities((String) claims.get(JwtContants.ROLES_KEY))
+                                .getFirst()
                                 .getAuthority()),
                 accessToken);
 
