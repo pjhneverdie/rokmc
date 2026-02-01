@@ -47,16 +47,21 @@ public class AuthService {
     }
 
     public TokenResponse issueToken(MemberPrincipal memberPrincipal) {
+        String email = memberPrincipal.getUsername();
+        String nickanme = memberPrincipal.getNickname();
+        String stringAuthorities = SecurityUtils.getStringAuthorities(memberPrincipal.getAuthorities());
+
         CreateTokenDto.CreateAccessTokenDto createAccessTokenDto = new CreateTokenDto.CreateAccessTokenDto(
-                memberPrincipal.getUsername(),
-                memberPrincipal.getNickname(), SecurityUtils.getStringAuthorities(memberPrincipal.getAuthorities()));
+                email,
+                nickanme, stringAuthorities);
 
         CreateTokenDto.CreateRefreshTokenDto createRefreshTokenDto = new CreateTokenDto.CreateRefreshTokenDto(
-                memberPrincipal.getUsername());
+                email,
+                nickanme, stringAuthorities);
 
         return new TokenResponse(
                 jwtService.createAccessToken(createAccessTokenDto),
-                jwtService.createRefreshToken(createRefreshTokenDto));
+                jwtService.createAndSaveRefreshToken(createRefreshTokenDto));
     }
 
     public TokenResponse reissueToken(String refreshToken) {
