@@ -27,16 +27,12 @@ public interface ApiResponse<T> {
         }
     }
 
-    static <T> Success<T> createDefaultSuccessResponse(T value) {
-        return new Success<>(value, "ok");
-    }
-
     static <T> Success<Void> createEmptySuccessResponse() {
         return new Success<>(null, "ok");
     }
 
-    static <T> Success<T> createCustomMessageSuccessResponse(T value, String message) {
-        return new Success<>(value, message);
+    static <T> Success<T> createDefaultSuccessResponse(T value) {
+        return new Success<>(value, "ok");
     }
 
     static Failure createDefaultFailureResponse(String exceptionName, String message, HttpStatus status) {

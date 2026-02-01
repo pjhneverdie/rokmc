@@ -12,6 +12,7 @@ import com.pdium.member.dto.MemberPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,6 +49,17 @@ public class AuthController {
         @PostMapping("/reissue")
         public ResponseEntity<ApiResponse.Success<TokenResponse>> reissue(
                         @CookieValue(name = "refreshToken") String refreshToken) {
+                TokenResponse tokenResponse = authService.reissueToken(refreshToken);
+
+                // 2. 새 리프레시 토큰을 위한 쿠키 설정
+                ResponseCookie cookie = ResponseCookie.from("refreshToken", tokenResponse.refreshToken())
+                                .httpOnly(true)
+                                .secure(true)
+                                .path("/reissue")
+                                .maxAge(86400)
+                                .sameSite("Lax")
+                                .build();
+
                 return ApiResponse.createDefaultSuccessResponse(authService.reissueToken(refreshToken))
                                 .toResponseEntity();
         }

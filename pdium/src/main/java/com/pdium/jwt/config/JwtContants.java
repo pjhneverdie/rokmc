@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 public abstract class JwtContants {
+
     public static final String ROLES_KEY = "roles";
     public static final String NICKNAME_KEY = "nickname";
     public static final String TYPE_DISCRIMINATOR_KEY = "token_type";
@@ -31,4 +32,5 @@ public abstract class JwtContants {
 
     private JwtContants() {
     }
+
 }

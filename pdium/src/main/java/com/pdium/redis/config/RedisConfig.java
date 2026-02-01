@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class RedisConfig {
 
-    private final RedisAutoSetProperties properties;
+    private final RedisProperties properties;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {

@@ -18,7 +18,7 @@ import com.pdium.TestRedisContainerInitializer;
 import com.pdium.YamlPropertySourceFactory;
 import com.pdium.jwt.config.JwtProperties;
 import com.pdium.mother.AuthenticationMother;
-import com.pdium.redis.config.RedisAutoSetProperties;
+import com.pdium.redis.config.RedisProperties;
 import com.pdium.redis.config.RedisConfig;
 
 @TestRedisContainerInitializer // 도커 + redis 관련 설정 자바 시스템 프로퍼티에 채워 줌
@@ -26,7 +26,7 @@ import com.pdium.redis.config.RedisConfig;
 @ContextConfiguration(classes = { RedisConfig.class, JwtService.class }) // @SpringBootTest 너무 무거우
 // 테스트 환경은 @ConfigurationPropertiesScan가 없음
 // @EnableConfigurationProperties를 명시해서 빈에 넣어야 함
-@EnableConfigurationProperties({ RedisAutoSetProperties.class, JwtProperties.class })
+@EnableConfigurationProperties({ RedisProperties.class, JwtProperties.class })
 // 왜인지는 모르겠지만 @ActiveProfiles가 안 들음.. TestPropertySource 써야 함
 @TestPropertySource(locations = "classpath:application-test.yml", factory = YamlPropertySourceFactory.class)
 public class JwtServiceTest {
