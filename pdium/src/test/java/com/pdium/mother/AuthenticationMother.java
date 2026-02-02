@@ -10,30 +10,16 @@ public abstract class AuthenticationMother {
     private AuthenticationMother() {
     }
 
-    public static MemberPrincipal createAdminMember() {
-        return MemberPrincipal.creatMemberPrincipalForSecurityContext("admin@example.com", "AdminUser",
-                MemberRole.ROLE_PJH, "");
-    }
+    public static UsernamePasswordAuthenticationToken createAuthenticationForSecurityContext() {
+        MemberPrincipal memberPrincipal = MemberPrincipal.creatMemberPrincipalForSecurityContext(
+                "test@example.com", "testuser", MemberRole.ROLE_GUEST, "accessToken");
 
-    public static MemberPrincipal createGuestMember() {
-        return MemberPrincipal.creatMemberPrincipalForSecurityContext("test@example.com", "TestUser",
-                MemberRole.ROLE_GUEST, "");
-    }
-
-    public static UsernamePasswordAuthenticationToken createAdminAuthentication() {
-        MemberPrincipal memberPrincipal = createAdminMember();
-        return new UsernamePasswordAuthenticationToken(
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 memberPrincipal,
                 null,
                 memberPrincipal.getAuthorities());
-    }
 
-    public static UsernamePasswordAuthenticationToken createGuestAuthentication() {
-        MemberPrincipal memberPrincipal = createGuestMember();
-        return new UsernamePasswordAuthenticationToken(
-                memberPrincipal,
-                null,
-                memberPrincipal.getAuthorities());
+        return authentication;
     }
 
 }

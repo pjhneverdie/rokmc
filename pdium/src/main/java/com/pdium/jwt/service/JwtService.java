@@ -82,7 +82,7 @@ public class JwtService {
     public String validateToken(String token) {
         Claims claims;
 
-        // AppException으로 throw
+        // AppException으로 throw.
         try {
             claims = jwtProvider.parseClaims(token);
         } catch (ExpiredJwtException e) {
@@ -93,13 +93,13 @@ public class JwtService {
             throw new InvalidTokenException();
         }
 
-        // 엑세스 토큰 재활용 방지
+        // 엑세스 토큰 재활용 방지.
         if (claims.get(JwtContants.TYPE_DISCRIMINATOR_KEY).equals(JwtContants.TokenType.ACCESS.getValue())
                 && tokenRepository.isBlacked(token)) {
             throw new ExpiredTokenException();
         }
 
-        // 리프레시 토큰 재활용 방지
+        // 리프레시 토큰 재활용 방지.
         if (claims.get(JwtContants.TYPE_DISCRIMINATOR_KEY).equals(JwtContants.TokenType.REFRESH.getValue())
                 && !tokenRepository.isRefreshTokenExist(JwtContants.REFRESH_TOKEN_PREFIX + claims.getSubject())) {
             throw new ExpiredTokenException();

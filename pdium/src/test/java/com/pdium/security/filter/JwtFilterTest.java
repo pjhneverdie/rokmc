@@ -1,26 +1,36 @@
 package com.pdium.security.filter;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pdium.WebMvcTestHelper;
 import com.pdium.TestSecurityMockConfig;
 import com.pdium.common.dto.ApiResponse;
+import com.pdium.common.exception.AppException;
+import com.pdium.jwt.dto.exception.ExpiredTokenException;
+import com.pdium.jwt.dto.exception.InvalidTokenException;
+import com.pdium.member.dto.MemberPrincipal;
 import com.pdium.mother.AuthenticationMother;
-import com.pdium.security.entrypoint.JwtAuthenticationEntryPoint;
 
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.stream.Stream;
 
 @ActiveProfiles("test")
 @Import({ JwtFilterTest.TestController.class, TestSecurityMockConfig.class, WebMvcTestHelper.class })
@@ -37,48 +47,51 @@ public class JwtFilterTest extends TestSecurityMockConfig {
     public static class TestController {
 
         @GetMapping("/api/protected")
-        public ResponseEntity<ApiResponse.Success<String>> protectedApi() {
-            return ApiResponse.createDefaultSuccessResponse("ok").toResponseEntity();
+        public ResponseEntity<ApiResponse.Success<String>> protectedApi(
+                @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+            return ApiResponse.createDefaultSuccessResponse(memberPrincipal.getAccessToken()).toResponseEntity();
         }
 
     }
 
     @Test
-    @DisplayName("정상적인 엑세스 토큰으로 요청을 보냈을 때")
     void testWhenValidAccessTokenIsRequested() throws Exception {
         // Given
-        String token = "accessToken";
+        when(jwtService.validateToken(anyString())).thenReturn("");
 
-        // When
-        doNothing().when(jwtService.validateToken(token));
-        when(jwtService.toAuthentication(token)).thenReturn(AuthenticationMother.createAdminAuthentication());
+        Authentication authentication = AuthenticationMother.createAuthenticationForSecurityContext();
+        MemberPrincipal memberPrincipal = (MemberPrincipal) authentication.getPrincipal();
+        when(jwtService.toAuthentication(anyString())).thenReturn(authentication);
 
-        // Then
+        // When & Then
         mockMvc.perform(get("/api/protected")
-                .header("Authorization", "Bearer " + token))
+                .header("Authorization", "Bearer accessToken"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(WebMvcTestHelper.toJson(ApiResponse.createDefaultSuccessResponse("ok"))));
+                .andExpect(content().json(WebMvcTestHelper.toJson(
+                        ApiResponse.createDefaultSuccessResponse(memberPrincipal.getAccessToken()))));
     }
 
-    @Test
-    @DisplayName("비정상적인 엑세스 토큰으로 요청을 보냈을 때")
-    void testWhenInValidAccessTokenIsRequested() throws Exception {
+    @ParameterizedTest
+    @MethodSource("provideExceptions")
+    void testWhenInvalidAccessTokenIsRequested(AppException e) throws Exception {
         // Given
-        String token = "accessToken";
+        when(jwtService.validateToken(anyString())).thenThrow(e);
 
-        // When
-        when(jwtService.validateToken(token)).thenReturn(false);
-
-        // Then
-        JwtAuthenticationEntryPoint.UnAuthorizedException ex = new JwtAuthenticationEntryPoint.UnAuthorizedException();
-
+        // When & Then
         mockMvc.perform(get("/api/protected")
-                .header("Authorization", "Bearer " + token))
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().json(WebMvcTestHelper.toJson(ApiResponse.createDefaultFailureResponse(
-                        ex.getClass().getSimpleName(),
-                        ex.getMessage(),
-                        ex.getHttpStatus()))));
+                .header("Authorization", "Bearer accessToken"))
+                .andExpect(status().is(e.getHttpStatus().value()))
+                .andExpect(content().json(WebMvcTestHelper.toJson(
+                        ApiResponse.createDefaultFailureResponse(
+                                e.getClass().getSimpleName(),
+                                e.getMessage(),
+                                e.getHttpStatus()))));
+    }
+
+    static Stream<Arguments> provideExceptions() {
+        return Stream.of(
+                Arguments.of(new ExpiredTokenException()),
+                Arguments.of(new InvalidTokenException()));
     }
 
 }

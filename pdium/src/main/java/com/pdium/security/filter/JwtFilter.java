@@ -2,6 +2,7 @@ package com.pdium.security.filter;
 
 import java.io.IOException;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -62,8 +63,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 throw e; // ExceptionHandlingFilter에서 처리
             }
 
+            Authentication authentication = jwtService.toAuthentication(accessToken);
+
             SecurityContextHolder.getContext()
-                    .setAuthentication(jwtService.toAuthentication(accessToken));
+                    .setAuthentication(authentication);
         }
     }
 
