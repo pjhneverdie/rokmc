@@ -27,23 +27,14 @@ public class JwtProvider {
                 .getBody();
     }
 
-    public String createToken(String subject, Map<String, Object> claims, long validity) {
-        long now = System.currentTimeMillis();
+    public String createToken(String subject, Map<String, Object> claims, Date issuedAt, Date expiration) {
         return Jwts.builder()
                 .setSubject(subject)
                 .addClaims(claims)
-                .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + validity))
+                .setIssuedAt(issuedAt)
+                .setExpiration(expiration)
                 .signWith(key, sigAlgorithm)
                 .compact();
-    }
-
-    public String getSubject(String token) {
-        return parseClaims(token).getSubject();
-    }
-
-    public long getValidity(String token) {
-        return parseClaims(token).getExpiration().getTime();
     }
 
 }

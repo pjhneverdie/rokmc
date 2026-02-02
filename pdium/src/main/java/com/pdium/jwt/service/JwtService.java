@@ -1,5 +1,6 @@
 package com.pdium.jwt.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.pdium.jwt.config.JwtContants;
 import com.pdium.jwt.config.JwtProperties;
 import com.pdium.jwt.dto.CreateTokenDto;
+import com.pdium.jwt.dto.RefreshTokenNExpiration;
 import com.pdium.jwt.dto.exception.ExpiredTokenException;
 import com.pdium.jwt.dto.exception.InvalidTokenException;
 import com.pdium.jwt.repository.TokenRepositoy;
@@ -40,35 +42,44 @@ public class JwtService {
         claims.put(JwtContants.ROLES_KEY, cTokenDto.stringAuthorities());
         claims.put(JwtContants.TYPE_DISCRIMINATOR_KEY, JwtContants.TokenType.ACCESS.getValue());
 
-        return jwtProvider.createToken(cTokenDto.email(), claims, jwtProperties.accessTokenValidity());
+        Date issuedAt = cTokenDto.issuedAt();
+        Date expiration = new Date(issuedAt.getTime() + jwtProperties.accessTokenValidity());
+
+        return jwtProvider.createToken(cTokenDto.email(), claims, issuedAt, expiration);
     }
 
     // 리프레시 토큰 생성 및 저장 메서드
-    public String createAndSaveRefreshToken(CreateTokenDto.CreateRefreshTokenDto cTokenDto) {
-        Map<String, Object> claims = new HashMap<>();
+    public RefreshTokenNExpiration createAndSaveRefreshToken(CreateTokenDto.CreateRefreshTokenDto cTokenDto) {
+        String refreshToken;
 
-        String sub = cTokenDto.email();
-        long refreshTokenValidity = jwtProperties.refreshTokenValidity();
+        Map<String, Object> claims = new HashMap<>();
 
         // 리프레시 토큰은 유저 정보 안 담음.
         claims.put(JwtContants.TYPE_DISCRIMINATOR_KEY, JwtContants.TokenType.REFRESH.getValue());
 
-        return tokenRepository.saveRefreshToken(JwtContants.REFRESH_TOKEN_PREFIX + sub,
-                jwtProvider.createToken(sub, claims, refreshTokenValidity),
-                refreshTokenValidity);
+        Date issuedAt = cTokenDto.issuedAt();
+        Date expiration = new Date(issuedAt.getTime() + jwtProperties.refreshTokenValidity());
+        refreshToken = jwtProvider.createToken(cTokenDto.email(), claims, issuedAt, expiration);
+
+        tokenRepository.saveRefreshToken(JwtContants.REFRESH_TOKEN_PREFIX + cTokenDto.email(), refreshToken,
+                expiration);
+
+        return new RefreshTokenNExpiration(refreshToken, expiration);
     }
 
     // 모든 토큰 무효화 메서드: 엑세스 토큰은 블랙리스트에 등록, 리프레쉬 토큰은 삭제
     public void nullifyJwt(String accessToken) {
-        tokenRepository.deleteRefreshToken(JwtContants.REFRESH_TOKEN_PREFIX + getEmailFromToken(accessToken));
+        Claims claims = jwtProvider.parseClaims(accessToken);
+
+        tokenRepository.deleteRefreshToken(JwtContants.REFRESH_TOKEN_PREFIX + claims.getSubject());
 
         tokenRepository.blackAccessToken(JwtContants.BLACKLIST_PREFIX + accessToken,
                 JwtContants.BlackReason.LOGOUT.getValue(),
-                getRemainingValidity(accessToken));
+                claims.getExpiration());
     }
 
     // 토큰 검증 메서드
-    public void validateToken(String token) {
+    public String validateToken(String token) {
         Claims claims;
 
         // AppException으로 throw
@@ -90,19 +101,11 @@ public class JwtService {
 
         // 리프레시 토큰 재활용 방지
         if (claims.get(JwtContants.TYPE_DISCRIMINATOR_KEY).equals(JwtContants.TokenType.REFRESH.getValue())
-                && !tokenRepository.isRefreshTokenExist(claims.getSubject())) {
+                && !tokenRepository.isRefreshTokenExist(JwtContants.REFRESH_TOKEN_PREFIX + claims.getSubject())) {
             throw new ExpiredTokenException();
         }
-    }
 
-    // 토큰에서 이메일 조회 메서드
-    public String getEmailFromToken(String token) {
-        return jwtProvider.getSubject(token);
-    }
-
-    // 토큰 남은 유효기간 조회 메서드
-    private long getRemainingValidity(String token) {
-        return Math.max(jwtProvider.getValidity(token) - System.currentTimeMillis(), 0);
+        return claims.getSubject();
     }
 
     // JwtFilter에서 엑세스 토큰으로 시큐리티 컨텍스트에 Authentication 넣을 때 사용!

@@ -37,8 +37,8 @@ public class SecurityConfig {
     private final MemberDetailsService memberDetailsService;
 
     public static final List<String> EXCLUDE_URLS = List.of(
-            "auth/login",
-            "auth/reissue");
+            "/**/auth/login",
+            "/**/auth/reissue");
 
     @Bean
     @Profile({ "local", "test" })
