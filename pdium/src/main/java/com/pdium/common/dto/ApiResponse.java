@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 
+import com.pdium.common.exception.AppException;
+
 public interface ApiResponse<T> {
 
     T value();
@@ -33,6 +35,10 @@ public interface ApiResponse<T> {
 
     static <T> Success<T> createDefaultSuccessResponse(T value) {
         return new Success<>(value, "ok");
+    }
+
+    static Failure createDefaultFailureResponse(AppException e) {
+        return new Failure(null, e.getClass().getSimpleName(), e.getMessage(), e.getHttpStatus());
     }
 
     static Failure createDefaultFailureResponse(String exceptionName, String message, HttpStatus status) {

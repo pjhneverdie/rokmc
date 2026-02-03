@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 
 import com.pdium.common.exception.AppException;
 
-public class InsufficientRoleException extends AppException {
+public class InSufficientRoleException extends AppException {
 
-    public InsufficientRoleException() {
+    public InSufficientRoleException() {
         super("check your role");
     }
 

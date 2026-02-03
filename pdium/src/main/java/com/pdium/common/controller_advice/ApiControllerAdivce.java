@@ -13,8 +13,7 @@ public class ApiControllerAdivce {
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ApiResponse.Failure> handleBusinessException(AppException e) {
-        return ApiResponse.createDefaultFailureResponse(e.getClass().getSimpleName(), e.getMessage(), e.getHttpStatus())
-                .toResponseEntity();
+        return ApiResponse.createDefaultFailureResponse(e).toResponseEntity();
     }
 
     @ExceptionHandler(Exception.class)

@@ -57,7 +57,7 @@ public class AuthController {
 
         @PostMapping("/logout")
         public ResponseEntity<ApiResponse.Success<Void>> logout(
-                        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+                        @AuthenticationPrincipal(expression = "#this != null") MemberPrincipal memberPrincipal) {
                 authService.logout(memberPrincipal.getAccessToken());
 
                 ResponseCookie cookie = createRefreshTokenCookie(null, 0);
@@ -69,7 +69,7 @@ public class AuthController {
 
         @PostMapping("/reissue")
         public ResponseEntity<ApiResponse.Success<TokenResponse>> reissue(
-                        @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME) String refreshToken) {
+                        @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME, required = true) String refreshToken) {
                 IssuedTokens issuedTokens = authService.reissueTokens(refreshToken);
 
                 // 토큰이 생성되고 응답이 나가기까지 조금이지만 차이가 있으니까,

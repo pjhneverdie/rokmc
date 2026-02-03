@@ -11,19 +11,15 @@ import com.pdium.security.filter.JwtFilter;
 import com.pdium.security.filter.JwtFilterExceptionHandlingFilter;
 import com.pdium.security.handler.JwtAccessDeniedHandler;
 
-// Real SecurityConfig-based configuration for filter testing.
-// Look how this is alike real one
-@Import({ SecurityConfig.class, JwtFilter.class, JwtFilterExceptionHandlingFilter.class,
-        JwtAuthenticationEntryPoint.class, JwtAccessDeniedHandler.class })
+// 시큐리티 레이어 슬라이스 테스트용 실제 컨피그 기반 목 컨피그
+@Import({ SecurityConfig.class, JwtFilterExceptionHandlingFilter.class, JwtFilter.class, JwtAccessDeniedHandler.class,
+        JwtAuthenticationEntryPoint.class })
 public class TestSecurityMockConfig {
 
-    // This class is designed to test Security-related logic.
-    // The actual implementation of JwtService is irrelevant;
-    // the focus is on how filters respond to various JwtService return values.
     @MockitoBean
-    protected JwtService jwtService;
+    public JwtService jwtService;
 
     @MockitoBean
-    protected MemberDetailsService memberDetailsService;
+    public MemberDetailsService memberDetailsService;
 
 }

@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.pdium.member.enum_type.MemberRole;
 import com.pdium.member.service.MemberDetailsService;
 import com.pdium.security.entrypoint.JwtAuthenticationEntryPoint;
 import com.pdium.security.filter.JwtFilter;
@@ -67,6 +68,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> {
             EXCLUDE_URLS.forEach(url -> auth.requestMatchers(url).permitAll());
+            auth.requestMatchers("/test/protected").hasRole(MemberRole.PJH.toString());
             auth.anyRequest().authenticated();
         });
 

@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-import com.pdium.security.dto.exception.InsufficientRoleException;
+import com.pdium.security.dto.exception.InSufficientRoleException;
 
 @Component
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-        InsufficientRoleException e = new InsufficientRoleException();
+        InSufficientRoleException e = new InSufficientRoleException();
 
         ApiResponse<Void> body = ApiResponse.createDefaultFailureResponse(e.getClass().getSimpleName(), e.getMessage(),
                 e.getHttpStatus());
